@@ -1,0 +1,35 @@
+{
+    "SUCCESS" : {
+        "register" : "User created successfully",
+        "login" : "You are now in Brainspack leave management system",
+        "email" : "Email verfied successfully",
+        "userVerification" : "User Verification Successful",
+        "passwordReset" : "Link has been sent to your email successfully",
+        "newPassword" : "Your new password has been successfully applied",
+        "getData"  : "Successfully fetched all data",
+        "leaveTaken" : "Leave applied successfully",
+        "deleteEvent" : "Holiday Deleted Successfully" 
+    },
+
+    "FAILURE" : {
+        "register" : "Unable to create new user",
+        "emailValidation" : "User already exists",
+        "login" : "Unable to connect with Brainspack please check your login credentials",
+        "userVerification" : "Unable to verify the user please check your login credentials",
+        "passwordReset" : "Unable to send link at you email please check the email before registering",
+        "newPassword" : "Your new password can not be registered please check your credentials",
+        "passwordField" : "Your password field can't be empty",
+        "credentials" : "Credentials mismatch",
+        "getData"  : "Unable to fetch all data",
+        "leaveTaken" : "Unable to apply the leave",
+        "notEnoughLeave" : "There are not enough leave available",
+        "leavePlaced" : "Leave already placed on this state",
+        "deleteEvent"  : "Unable to delete Holiday"
+    },
+
+    "VALIDATION": {
+        "emptyFields" : "Email and password fields must be filled",
+        "emailType" : "Email must be in lower case and contains speacial character '@' ex:- abc@123.com"
+
+    }
+}
