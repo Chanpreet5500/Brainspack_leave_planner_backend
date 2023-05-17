@@ -33,7 +33,7 @@ const registerUser = async (req, res) => {
     city: req.body.city,
     designation: req.body.designation,
     verificationToken: token,
-    birthDate : req.body.birthdate
+    birthDate: req.body.birthdate,
   });
 
   if (userData) {
@@ -130,7 +130,7 @@ const loginUser = async (req, res) => {
     });
   } else {
     if (userData) {
-      console.log(userData, "USERDATA")
+      console.log(userData, "USERDATA");
       const userEmail = userData.email;
 
       const userDetail = User.findOne({ userEmail });
@@ -148,11 +148,11 @@ const loginUser = async (req, res) => {
           data: {
             _id: userData._id,
             name: userData.firstName + userData.lastName,
-            firstName : userData.firstName,
-            lastName : userData.lastName,
-            birthDate : userData.birthDate,
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            birthDate: userData.birthDate,
             email: userEmail,
-            designation : userData.designation
+            designation: userData.designation,
           },
         });
       } else {
@@ -191,7 +191,6 @@ const verifyUser = async (req, res) => {
 };
 
 const forgotPassword = async (req, res) => {
-
   const userEmail = await User.findOne({
     email: req.body.email,
   });
@@ -203,14 +202,12 @@ const forgotPassword = async (req, res) => {
       verificationToken: newVerificationToken,
     });
 
-    if(userData){
-      
+    if (userData) {
       res.status(200).json({
         message: MESSAGE.SUCCESS.passwordReset,
         verifyUrl: `http://localhost:3000/reset-password/${newVerificationToken}`,
       });
     }
-
   } else {
     res.status(400).json({
       message: MESSAGE.FAILURE.passwordReset,
@@ -220,12 +217,9 @@ const forgotPassword = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   try {
-
-
-    const newPassword = req.body.newPassword
-    const verificationToken = req.body.token
-    const confirmPassword = req.body.confirmPassword
-
+    const newPassword = req.body.newPassword;
+    const verificationToken = req.body.token;
+    const confirmPassword = req.body.confirmPassword;
 
     // const existingPassword = req.body.oldPassword;
 
@@ -282,19 +276,19 @@ const registerViaGoogle = async (data) => {
 
 const getAllData = async (req, res) => {
   const { id } = req.params;
-
+  console.log(req.params, 'request from database');
   const data = await User.findOne({ _id: id });
   console.log(data);
   if (data) {
     res.status(200).json({
-      data : {
-        name : data.firstName + " " + data.lastName,
-        email : data.email,
-        leaveAvailable : data.leaveAvailable,
-        birthdate : data.birthDate,
-        leaveTaken : data.leaveTaken,
-        firstName : data.firstName,
-        designation : data.designation
+      data: {
+        name: data.firstName + " " + data.lastName,
+        email: data.email,
+        leaveAvailable: data.leaveAvailable,
+        birthdate: data.birthDate,
+        leaveTaken: data.leaveTaken,
+        firstName: data.firstName,
+        designation: data.designation,
       },
       message: MESSAGE.SUCCESS.getData,
     });
@@ -312,30 +306,31 @@ const leaveData = async (req, res) => {
   if (userDataFromUser) {
     const userAvailableLeaves = userDataFromUser.leaveAvailable;
 
-    const exactDatesOfLeaves = userData.leaveDates.map(e => e)
+    const exactDatesOfLeaves = userData.leaveDates.map((e) => e);
 
     if (userAvailableLeaves > exactDatesOfLeaves.length) {
-
-      const checkUserLeave = await Leave.find(
-       { $in : {
-          leaveDates: exactDatesOfLeaves
-        }, userId : userData.userId,
-
-      })
+      const checkUserLeave = await Leave.find({
+        userData: {
+          $in: [
+            {
+              leaveDates: exactDatesOfLeaves,
+              userId: userData.userId,
+            },
+          ],
+        },
+      });
 
       if (checkUserLeave.length == 0) {
+        userData.leaveDates.map((leaves) => {
+          const applyForLeave = Leave.create({
+            userId: userData.userId,
+            leaveType: userData.leaveType,
+            leaveDates: leaves,
+            description: userData.description,
+          });
+        });
 
-        userData.leaveDates.map(leaves =>{
- 
-            const applyForLeave = Leave.create({
-              userId: userData.userId,
-              leaveType : userData.leaveType,
-              leaveDates : leaves,
-              description: userData.description,
-            });
-        } )
-
-        const numberOfLeaves = exactDatesOfLeaves.length
+        const numberOfLeaves = exactDatesOfLeaves.length;
 
         const updateUserAvaillableLeaves = await userDataFromUser.updateOne({
           leaveAvailable: userDataFromUser.leaveAvailable - numberOfLeaves,
@@ -347,11 +342,10 @@ const leaveData = async (req, res) => {
         });
       } else {
         res.status(400).json({
-        message : MESSAGE.FAILURE.leavePlaced
-      })
-      } 
-      
-    } 
+          message: MESSAGE.FAILURE.leavePlaced,
+        });
+      }
+    }
   } else {
     res.status(422).json({
       message: MESSAGE.FAILURE.notEnoughLeave,
@@ -364,13 +358,13 @@ const getStatisticsData = async (req, res) => {
   console.log(data.firstName, "LOUF");
   if (data) {
     res.status(200).json({
-      data : {
-        name : data.firstName + data.lastName,
-        email : data.email,
-        firstName : data.firstName
+      data: {
+        name: data.firstName + data.lastName,
+        email: data.email,
+        firstName: data.firstName,
       },
       data,
-      message: MESSAGE.SUCCESS.leaveTaken
+      message: MESSAGE.SUCCESS.leaveTaken,
     });
   } else {
     res.status(400).json({
@@ -379,75 +373,65 @@ const getStatisticsData = async (req, res) => {
   }
 };
 
-const getLeaveDates = async(req, res) => {
-  const userId = req.params.id
-  const userType = req.params.userType
+const getLeaveDates = async (req, res) => {
+  const userId = req.params.id;
+  const userType = req.params.userType;
 
-  if(userId ){
+  if (userId) {
+    if (userType === "my_leave") {
+      const data = await Leave.find({ userId: userId }).populate("userId");
 
-    if(userType === 'my_leave'){
-
-      const data = await Leave.find({userId: userId}).populate('userId')
-
-      if(data){
+      if (data) {
         res.status(200).json({
-          message : MESSAGE.SUCCESS.login,
-          data 
-        })
+          message: MESSAGE.SUCCESS.login,
+          data,
+        });
       }
-
     } else {
-      const data = await Leave.find().populate('userId')
-      if(data){
+      const data = await Leave.find().populate("userId");
+      if (data) {
         res.status(200).json({
-          message : MESSAGE.SUCCESS.login,
-          data
-        })
+          message: MESSAGE.SUCCESS.login,
+          data,
+        });
       }
     }
-    
-  }
-    else {
-      res.status(400).json({
-        message : MESSAGE.FAILURE.login
-      })
-    }
-
-}
-
-const deleteUserById = async(req, res) => {
-
-  const userId = req.params.id
-  const userData = await Leave.findOne({_id : userId}).populate('userId')
-
-  const userDataId = userData?.userId?._id
-
-  const loggedInUser = await User.findOne({_id: userDataId})
-
-  const data = await Leave.deleteOne({_id : userId})
-
-  if(data){
-
-    const updatedUserLeaves = await loggedInUser.updateOne({
-        leaveTaken : loggedInUser.leaveTaken - data.deletedCount,
-        leaveAvailable : loggedInUser.leaveAvailable + data.deletedCount
-    })
-
-    console.log(updatedUserLeaves, "UPDATE")
-
-    if(updatedUserLeaves){
-
-      res.status(200).json({
-        message : MESSAGE.SUCCESS.deleteEvent
-      })
-    }
-  }else {
+  } else {
     res.status(400).json({
-      message: MESSAGE.FAILURE.deleteEvent
-    })
+      message: MESSAGE.FAILURE.login,
+    });
   }
+};
 
-}
+const deleteUserById = async (req, res) => {
+  const userId = req.params.id;
+  const userData = await Leave.findOne({ _id: userId }).populate("userId");
+
+  const userDataId = userData?.userId?._id;
+
+  const loggedInUser = await User.findOne({ _id: userDataId });
+
+  const data = await Leave.deleteOne({ _id: userId });
+
+  if (data) {
+    const updatedUserLeaves = await loggedInUser.updateOne({
+      leaveTaken: loggedInUser.leaveTaken - data.deletedCount,
+      leaveAvailable: loggedInUser.leaveAvailable + data.deletedCount,
+    });
+
+    console.log(updatedUserLeaves, "UPDATE");
+
+    if (updatedUserLeaves) {
+      res.status(200).json({
+        message: MESSAGE.SUCCESS.deleteEvent,
+      });
+    }
+  } else {
+    res.status(400).json({
+      message: MESSAGE.FAILURE.deleteEvent,
+    });
+  }
+};
 
 module.exports = {
   registerUser,
@@ -460,5 +444,5 @@ module.exports = {
   leaveData,
   getStatisticsData,
   getLeaveDates,
-  deleteUserById
+  deleteUserById,
 };

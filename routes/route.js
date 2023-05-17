@@ -1,6 +1,7 @@
 const express = require('express')
 const passport = require('passport')
 const userController = require('../controllers/loginController') 
+const timeTrackerController = require('../controllers/timeTrackerController');
 const validations = require('../validations/validations')
 const router = express.Router();
  
@@ -24,5 +25,7 @@ router.post('/leave', userController.leaveData)
 router.get('/statistic', userController.getStatisticsData)
 router.get('/leave-data/:id/:userType', userController.getLeaveDates)
 router.delete('/delete-event/:id', userController.deleteUserById)
+
+router.get('/testData/', timeTrackerController.getData)
 
 module.exports = router
