@@ -260,9 +260,9 @@ const resetPassword = async (req, res) => {
 const registerViaGoogle = async (data) => {
   const userDetails = data;
   const formData = {
-    firstName: userDetails.given_name,
-    lastName: userDetails.family_name,
-    email: userDetails.email,
+    firstName: userDetails?.given_name,
+    lastName: userDetails?.family_name,
+    email: userDetails?.email,
   };
 
   if (formData) {
