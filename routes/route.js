@@ -36,9 +36,7 @@ router.get("/failure", function (req, res) {
 });
 router.get(
   "/dashboard/:id",
-  passport.authenticate("local", {
-    failWithError: false,
-  }),
+  passport.authenticate("local", { failWithError: false }),
   userController.getAllData
 );
 router.post("/leave", userController.leaveData);

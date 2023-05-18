@@ -9,9 +9,15 @@ const getData = async (req, res) => {
     const { startDate, endDate } = req.body;
     console.log(req.body);
     const data = await TimeTracker.findOne(
-      { userId: id },
       {
-        $and: [{ $eq: [startDate, endDate] }],
+        userId: id,
+      },
+      {
+        $and: [
+          {
+            $eq: [startDate, endDate],
+          },
+        ],
       }
     );
     console.log(data, "data from api");
@@ -29,7 +35,9 @@ const updateProjectData = async (req, res) => {
   const { id } = req.params;
   const { projectName, taskName, taskDescription, status, hours } = req.body;
   const updateProjectInfo = await TimeTracker.updateOne(
-    { _id: id },
+    {
+      _id: id,
+    },
     {
       $set: {
         projectName,
