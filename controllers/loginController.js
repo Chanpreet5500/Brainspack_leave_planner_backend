@@ -276,7 +276,7 @@ const registerViaGoogle = async (data) => {
 
 const getAllData = async (req, res) => {
   const { id } = req.params;
-  console.log(req.params, 'request from database');
+  console.log(req.params, "request from database");
   const data = await User.findOne({ _id: id });
   console.log(data);
   if (data) {
