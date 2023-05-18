@@ -28,5 +28,6 @@ router.delete('/delete-event/:id', userController.deleteUserById)
 
 router.get('/testData/:id', timeTrackerController.getData)
 router.delete('/delete-user/:id', timeTrackerController.deleteData)
+router.post('/sendData/:id', timeTrackerController.postData);
 
-module.exports = router
+module.exports = router;
