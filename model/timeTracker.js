@@ -25,10 +25,14 @@ const schema = mongoose.Schema({
     type: Boolean,
     require: true,
   },
-  // date: {
-  //   type: Date,
-  //   require: true,
-  // },
+  startDate: {
+    type: Date,
+    require: true,
+  },
+  endDate: {
+    type: Date,
+    require: true,
+  },
 });
 
 const timetracker = mongoose.model("TimeTracker", schema);
