@@ -278,7 +278,6 @@ const getAllData = async (req, res) => {
   const { id } = req.params;
   console.log(req.params, "request from database");
   const data = await User.findOne({ _id: id });
-  console.log(data);
   if (data) {
     res.status(200).json({
       data: {
@@ -355,7 +354,6 @@ const leaveData = async (req, res) => {
 
 const getStatisticsData = async (req, res) => {
   const data = await User.find();
-  console.log(data.firstName, "LOUF");
   if (data) {
     res.status(200).json({
       data: {

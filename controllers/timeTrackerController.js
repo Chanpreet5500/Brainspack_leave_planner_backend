@@ -4,15 +4,30 @@ const express = require("express");
 const app = express();
 
 const getData = async (req, res) => {
-  const { id } = req.params;
-  console.log(req.params, "Body console");
   try {
-    if (id) {
-      const data = await TimeTracker.findOne({ _id: id });
-      console.log(data, "data from api");
+    const { id } = req.params;
+    const { startDate, endDate } = req.body;
+    console.log(req.body);
+    const data = await TimeTracker.findOne(
+      {
+        userId: id,
+      },
+      {
+        $and: [
+          {
+            $eq: [startDate, endDate],
+          },
+        ],
+      }
+    );
+    console.log(data, "data from api");
+    if (data) {
+      res.status(200).json({ data });
+    } else {
+      res.status(400).json({ message: "NO" });
     }
   } catch (err) {
-    res.status(400).send(err);
+    console.log(err, "ERROR");
   }
 };
 
@@ -31,6 +46,7 @@ const deleteData = async (req, res) => {
     res.status(500).send(err);
   }
 };
+
 const postData = async (req, res) => {
   try {
     const { id } = req.params;
@@ -56,8 +72,34 @@ const postData = async (req, res) => {
   }
 };
 
+const updateProjectData = async (req, res) => {
+  try {
+    const { projectName, taskName, taskDescription, status, hours } = req.body;
+    const updateProjectInfo = await TimeTracker.updateOne(
+      {
+        _id: id,
+      },
+      {
+        $set: {
+          projectName,
+          taskName,
+          taskDescription,
+          status,
+          hours,
+        },
+      }
+    );
+    updateProjectInfo
+      ? res.status(200).json({ updateProjectInfo })
+      : res.status(400).json({ message: "Something went wrong" });
+  } catch (error) {
+    console.log(error, "Error from backend line");
+  }
+};
+
 module.exports = {
   getData,
   deleteData,
   postData,
+  updateProjectData,
 };
