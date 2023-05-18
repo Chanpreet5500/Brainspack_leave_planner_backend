@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const schema = mongoose.Schema({
+const schema =new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -25,11 +25,12 @@ const schema = mongoose.Schema({
     type: Boolean,
     require: true,
   },
-  // date: {
-  //   type: Date,
-  //   require: true,
-  // },
+  date: {
+    type: Date,
+    default: Date.now,
+    require: true,
+  },
 });
 
-const timetracker = mongoose.model("TimeTracker", schema);
+const timetracker = mongoose.model("timetracker", schema);
 module.exports = timetracker;
