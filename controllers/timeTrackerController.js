@@ -6,7 +6,7 @@ const app = express();
 const getData = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(req.body);
+    console.log(id, "userId");
     const data = await TimeTracker.find({ userId: id });
     console.log(data, "data from api");
     if (data) {
@@ -16,6 +16,31 @@ const getData = async (req, res) => {
     }
   } catch (err) {
     console.log(err, "ERROR");
+  }
+};
+
+const postData = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const data = req.body;
+    const { projectName, taskName, taskDescription, hours, status, date } =
+      data;
+    const newData = await TimeTracker.insertMany({
+      userId: id,
+      projectName,
+      taskName,
+      taskDescription,
+      hours,
+      status,
+      date,
+    });
+    if (newData) {
+      res.status(200).json({ newData });
+    } else {
+      res.status(500).json({ message: "Something went wrong" });
+    }
+  } catch (err) {
+    res.status(400).json({ message: "Something went wrong" });
   }
 };
 
@@ -44,4 +69,5 @@ const updateProjectData = async (req, res) => {
 module.exports = {
   getData,
   updateProjectData,
+  postData
 };

@@ -25,13 +25,10 @@ const schema = mongoose.Schema({
     type: Boolean,
     require: true,
   },
-  startDate: {
+  date: {
     type: Date,
     require: true,
-  },
-  endDate: {
-    type: Date,
-    require: true,
+    default: Date.now(),
   },
 });
 
