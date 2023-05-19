@@ -6,20 +6,8 @@ const app = express();
 const getData = async (req, res) => {
   try {
     const { id } = req.params;
-    const { startDate, endDate } = req.body;
     console.log(req.body);
-    const data = await TimeTracker.findOne(
-      {
-        userId: id,
-      },
-      {
-        $and: [
-          {
-            $eq: [startDate, endDate],
-          },
-        ],
-      }
-    );
+    const data = await TimeTracker.find({ userId: id });
     console.log(data, "data from api");
     if (data) {
       res.status(200).json({ data });
