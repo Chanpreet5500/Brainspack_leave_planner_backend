@@ -44,7 +44,7 @@ router.delete("/delete-event/:id", userController.deleteUserById);
 
 router.delete("/delete-user/:id", timeTrackerController.deleteData);
 router.post("/sendData/:id", timeTrackerController.postData);
-router.get("/testData", timeTrackerController.getData);
-router.patch("/update/:id", timeTrackerController.updateProjectData);
-
+router.get("/testData/:id", timeTrackerController.getData);
+router.patch("/update", timeTrackerController.updateProjectData);
+router.get("/edituserdata/:id", timeTrackerController.getEditUserData);
 module.exports = router;
