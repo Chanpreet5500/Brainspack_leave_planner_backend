@@ -7,7 +7,6 @@ const app = express();
 //   try {
 //     const { id } = req.params;
 //     // const { startDate, endDate } = req.body;
-//     // console.log(req.body);
 //     const data = await TimeTracker.findOne(
 //       {
 //         userId: id,
@@ -21,14 +20,12 @@ const app = express();
 //       //   ],
 //       // }
 //     );
-//     console.log(data, "data from api");
 //     if (data) {
 //       res.status(200).json({ data });
 //     } else {
 //       res.status(400).json({ message: "NO" });
 //     }
 //   } catch (err) {
-//     console.log(err, "ERROR");
 //   }
 // };
 
@@ -36,7 +33,6 @@ const getData = async (req, res) => {
   const { id } = req.params;
 
   const data = await TimeTracker.find({ userId: id });
-  console.log(data);
   if (data) {
     res.status(200).json({ data });
   } else {
@@ -56,11 +52,9 @@ const getEditUserData = async (req, res) => {
 
 const deleteData = async (req, res) => {
   const { id } = req.params;
-  console.log(id, "ID FROM DELETE API");
   try {
     if (id) {
       const deleteUser = await TimeTracker.findByIdAndDelete(id);
-      console.log(deleteUser);
       res.send(deleteUser);
     } else {
       return res.status(400).send();
@@ -98,8 +92,7 @@ const postData = async (req, res) => {
 const updateProjectData = async (req, res) => {
 
   try {
-    const { projectName, taskName, taskDescription, status, hours ,_id} = req.body;
-    console.log(req.body)
+    const { projectName, taskName, taskDescription, status, hours ,date,_id} = req.body;
     const updateProjectInfo = await TimeTracker.updateOne(
       {
         _id:_id ,
@@ -111,6 +104,7 @@ const updateProjectData = async (req, res) => {
           taskDescription,
           status,
           hours,
+          date
         },
       }
     );
@@ -118,7 +112,6 @@ const updateProjectData = async (req, res) => {
       ? res.status(200).json({ updateProjectInfo })
       : res.status(400).json({ message: "Something went wrong" });
   } catch (error) {
-    console.log(error, "Error from backend line");
   }
 };
 
