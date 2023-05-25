@@ -49,6 +49,7 @@ router.get("/getDataById/:id", timeTrackerController.getDataById);
 router.post("/sendData/:id", timeTrackerController.postData);
 router.delete("/delete-user/:id", timeTrackerController.deleteData);
 router.patch("/update/:id", timeTrackerController.updateProjectData);
+router.patch("/updateCalendar", timeTrackerController.updateCalendarData);
 router.get(
   "/weekly-datas/:id/:weekFIrstDay/:weekLastDay",
   timeTrackerController.getDataOfWeek

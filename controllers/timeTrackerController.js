@@ -7,23 +7,20 @@ const app = express();
 const getData = async (req, res) => {
   try {
     const { id } = req.params;
-    // console.log(id, "userId");
     const data = await TimeTracker.find({ userId: id });
-    // console.log(data, "data from api");
     if (data) {
       res.status(200).json({ data });
     } else {
       res.status(400).json({ message: "NO" });
     }
   } catch (err) {
-    console.log(err, "ERROR");
+    return err;
   }
 };
 
 const postData = async (req, res) => {
   try {
     const data = req.body;
-    console.log(data, "data from formik in backend");
     try {
       const sendData = await TimeTracker.insertMany(data);
       if (sendData) {
@@ -32,7 +29,7 @@ const postData = async (req, res) => {
         res.status(500).json({ message: "Something went wrong" });
       }
     } catch (e) {
-      console.log(e, "error");
+      return e;
     }
   } catch (err) {
     res.status(400).json({ message: "Something went wrong" });
@@ -49,7 +46,7 @@ const getDataById = async (req, res) => {
       res.status(400).json({ message: "Something went wrong" });
     }
   } catch (error) {
-    console.log(error, "Error from backend");
+    return error;
   }
 };
 
@@ -79,11 +76,9 @@ const updateProjectData = async (req, res) => {
 
 const deleteData = async (req, res) => {
   const { id } = req.params;
-  console.log(id, "ID FROM DELETE API");
   try {
     if (id) {
       const deleteUser = await TimeTracker.findByIdAndDelete(id);
-      console.log(deleteUser);
       res.send(deleteUser);
     } else {
       return res.status(400).send();
@@ -96,7 +91,6 @@ const deleteData = async (req, res) => {
 const getDataOfWeek = async (req, res) => {
   try {
     const { id, weekFIrstDay, weekLastDay } = req.params;
-    console.log(weekFIrstDay, weekLastDay);
 
     const filterdUsers = await TimeTracker.find({
       userId: id,
@@ -108,6 +102,33 @@ const getDataOfWeek = async (req, res) => {
     filterdUsers
       ? res.status(200).json({ filterdUsers })
       : res.status(400).json({ message: "Something went wrong" });
+  } catch (error) {
+    return error;
+  }
+};
+
+const updateCalendarData = async (req, res) => {
+  try {
+    const { projectName, taskName, taskDescription, status, hours, date, _id } =
+      req.body;
+    const updateProjectInfo = await TimeTracker.updateOne(
+      {
+        _id: _id,
+      },
+      {
+        $set: {
+          projectName,
+          taskName,
+          taskDescription,
+          status,
+          hours,
+          date,
+        },
+      }
+    );
+    updateProjectInfo
+      ? res.status(200).json({ updateProjectInfo })
+      : res.status(400).json({ message: "Something went wrong" });
   } catch (error) {}
 };
 
@@ -117,5 +138,6 @@ module.exports = {
   postData,
   deleteData,
   getDataById,
-  getDataOfWeek
+  getDataOfWeek,
+  updateCalendarData
 };
