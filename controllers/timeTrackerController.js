@@ -23,7 +23,7 @@ const getData = async (req, res) => {
 const postData = async (req, res) => {
   try {
     const data = req.body;
-    console.log(data, 'data from formik in backend')
+    console.log(data, "data from formik in backend");
     try {
       const sendData = await TimeTracker.insertMany(data);
       if (sendData) {
@@ -55,7 +55,8 @@ const getDataById = async (req, res) => {
 
 const updateProjectData = async (req, res) => {
   const { id } = req.params;
-  const { projectName, taskName, taskDescription, status, hours, date } = req.body;
+  const { projectName, taskName, taskDescription, status, hours, date } =
+    req.body;
   const updateProjectInfo = await TimeTracker.updateOne(
     {
       _id: id,
@@ -67,7 +68,7 @@ const updateProjectData = async (req, res) => {
         taskDescription,
         status,
         hours,
-        date
+        date,
       },
     }
   );
@@ -92,10 +93,29 @@ const deleteData = async (req, res) => {
   }
 };
 
+const getDataOfWeek = async (req, res) => {
+  try {
+    const { id, weekFIrstDay, weekLastDay } = req.params;
+    console.log(weekFIrstDay, weekLastDay);
+
+    const filterdUsers = await TimeTracker.find({
+      userId: id,
+      date: {
+        $gte: weekFIrstDay,
+        $lt: weekLastDay,
+      },
+    });
+    filterdUsers
+      ? res.status(200).json({ filterdUsers })
+      : res.status(400).json({ message: "Something went wrong" });
+  } catch (error) {}
+};
+
 module.exports = {
   getData,
   updateProjectData,
   postData,
   deleteData,
   getDataById,
+  getDataOfWeek
 };
