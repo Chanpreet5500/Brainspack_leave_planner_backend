@@ -259,6 +259,7 @@ const resetPassword = async (req, res) => {
 
 const registerViaGoogle = async (data) => {
   const userDetails = data;
+  // console.log(userDetails, 'userDetails')
   const formData = {
     firstName: userDetails?.given_name,
     lastName: userDetails?.family_name,

@@ -29,6 +29,7 @@ const schema = new mongoose.Schema({
     type: Date,
     default: Date.now,
     require: true,
+    default: Date.now(),
   },
 });
 

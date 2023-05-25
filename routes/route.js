@@ -42,10 +42,15 @@ router.get("/statistic", userController.getStatisticsData);
 router.get("/leave-data/:id/:userType", userController.getLeaveDates);
 router.delete("/delete-event/:id", userController.deleteUserById);
 
-router.delete("/delete-user/:id", timeTrackerController.deleteData);
-router.post("/sendData/:id", timeTrackerController.postData);
 router.get("/testData/:id", timeTrackerController.getData);
-router.patch("/update/:id", timeTrackerController.updateProjectData);
-router.get("/edituserdata/:id", timeTrackerController.getEditUserData);
 router.get("/getDataById/:id", timeTrackerController.getDataById);
+router.post("/sendData/:id", timeTrackerController.postData);
+router.delete("/delete-user/:id", timeTrackerController.deleteData);
+router.patch("/update/:id", timeTrackerController.updateProjectData);
+router.patch("/updateCalendar", timeTrackerController.updateCalendarData);
+router.get(
+  "/weekly-datas/:id/:weekFIrstDay/:weekLastDay",
+  timeTrackerController.getDataOfWeek
+);
+
 module.exports = router;
