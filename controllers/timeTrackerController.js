@@ -64,6 +64,21 @@ const deleteData = async (req, res) => {
   }
 };
 
+
+const getDataById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const data = await TimeTracker.find({ _id: id });
+    if (data) {
+      res.status(200).json({ data });
+    } else {
+      res.status(400).json({ message: "Something went wrong" });
+    }
+  } catch (error) {
+    console.log(error, "Error from backend");
+  }
+};
+
 const postData = async (req, res) => {
   try {
     const { id } = req.params;
@@ -90,12 +105,12 @@ const postData = async (req, res) => {
 };
 
 const updateProjectData = async (req, res) => {
-
+  const {id} = req.params;
   try {
     const { projectName, taskName, taskDescription, status, hours ,date,_id} = req.body;
     const updateProjectInfo = await TimeTracker.updateOne(
       {
-        _id:_id ,
+        _id:id ,
       },
       {
         $set: {
@@ -120,5 +135,6 @@ module.exports = {
   deleteData,
   postData,
   updateProjectData,
-  getEditUserData
+  getEditUserData,
+  getDataById
 };
