@@ -97,5 +97,5 @@ module.exports = {
   updateProjectData,
   postData,
   deleteData,
-  getDataById
+  getDataById,
 };
