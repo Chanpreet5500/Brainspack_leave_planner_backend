@@ -7,7 +7,7 @@ const app = express();
 const getData = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id, "userId");
+    // console.log(id, "userId");
     const data = await TimeTracker.find({ userId: id });
     // console.log(data, "data from api");
     if (data) {
@@ -23,11 +23,11 @@ const getData = async (req, res) => {
 const postData = async (req, res) => {
   try {
     const data = req.body;
-
+    console.log(data, 'data from formik in backend')
     try {
-      await TimeTracker.insertMany(data);
-      if (data) {
-        res.status(200).json({ data });
+      const sendData = await TimeTracker.insertMany(data);
+      if (sendData) {
+        res.status(200).json(sendData);
       } else {
         res.status(500).json({ message: "Something went wrong" });
       }
@@ -55,7 +55,7 @@ const getDataById = async (req, res) => {
 
 const updateProjectData = async (req, res) => {
   const { id } = req.params;
-  const { projectName, taskName, taskDescription, status, hours } = req.body;
+  const { projectName, taskName, taskDescription, status, hours, date } = req.body;
   const updateProjectInfo = await TimeTracker.updateOne(
     {
       _id: id,
@@ -67,6 +67,7 @@ const updateProjectData = async (req, res) => {
         taskDescription,
         status,
         hours,
+        date
       },
     }
   );
