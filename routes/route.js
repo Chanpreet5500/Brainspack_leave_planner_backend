@@ -44,7 +44,13 @@ router.delete("/delete-event/:id", userController.deleteUserById);
 
 router.delete("/delete-user/:id", timeTrackerController.deleteData);
 router.post("/sendData/:id", timeTrackerController.postData);
-router.get("/testData", timeTrackerController.getData);
+router.get("/testData/:id", timeTrackerController.getData);
 router.patch("/update/:id", timeTrackerController.updateProjectData);
+router.get("/users-data", timeTrackerController.getAllData);
+router.get("/logged-user-data/:id", timeTrackerController.getLoggedUserData);
+router.post('/weekly-data/:id',timeTrackerController.getWeekData);
+router.get('/weekly-datas/:id/:weekFIrstDay/:weekLastDay',timeTrackerController.getDataOfWeek);
+router.get('/edituserdata/:id',timeTrackerController.getEditUserData);
+router.patch("/update", timeTrackerController.updateProjectData);
 
 module.exports = router;

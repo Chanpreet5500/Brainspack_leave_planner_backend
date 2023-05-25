@@ -7,7 +7,6 @@ const getData = async (req, res) => {
   try {
     const { id } = req.params;
     const { startDate, endDate } = req.body;
-    console.log(req.body);
     const data = await TimeTracker.findOne(
       {
         userId: id,
@@ -20,7 +19,6 @@ const getData = async (req, res) => {
         ],
       }
     );
-    console.log(data, "data from api");
     if (data) {
       res.status(200).json({ data });
     } else {
@@ -31,19 +29,53 @@ const getData = async (req, res) => {
   }
 };
 
+const getAllData = async (req, res) => {
+  try {
+    const empolyeeData = await TimeTracker.find();
+
+    if (empolyeeData) {
+      res.status(200).json({
+        message: "Data Fetched successfully",
+        data: empolyeeData,
+      });
+    }
+  } catch (err) {
+    res.status(400).json({
+      message: "Failed to Fetched Data",
+      error: err,
+    });
+  }
+};
+
 const deleteData = async (req, res) => {
   const { id } = req.params;
-  console.log(id, "ID FROM DELETE API");
   try {
     if (id) {
       const deleteUser = await TimeTracker.findByIdAndDelete(id);
-      console.log(deleteUser);
       res.send(deleteUser);
     } else {
       return res.status(400).send();
     }
   } catch (err) {
-    res.status(500).send(err);
+    res.status(400).json({
+      message: "Failed to Fetched Data",
+      error: err,
+    });
+  }
+};
+
+const getLoggedUserData = async (req, res) => {
+  const { id } = req.params;
+  try {
+    if (id) {
+      const getUser = await TimeTracker.find({ userId: id });
+      res.status(200).json({
+        message: "Data Fetched successfully",
+        data: getUser,
+      });
+    }
+  } catch (err) {
+    res.stat;
   }
 };
 
@@ -53,6 +85,7 @@ const postData = async (req, res) => {
     const data = req.body;
     const { projectName, taskName, taskDescription, hours, status, date } =
       data;
+
     const newData = await TimeTracker.insertMany({
       userId: id,
       projectName,
@@ -68,16 +101,43 @@ const postData = async (req, res) => {
       res.status(500).json({ message: "Something went wrong" });
     }
   } catch (err) {
+    console.log(err);
     res.status(400).json({ message: "Something went wrong" });
   }
 };
 
+// const updateProjectData = async (req, res) => {
+//   try {
+//     const { projectName, taskName, taskDescription, status, hours } = req.body;
+//     const updateProjectInfo = await TimeTracker.updateOne(
+//       {
+//         _id: id,
+//       },
+//       {
+//         $set: {
+//           projectName,
+//           taskName,
+//           taskDescription,
+//           status,
+//           hours,
+//         },
+//       }
+//     );
+//     updateProjectInfo
+//       ? res.status(200).json({ updateProjectInfo })
+//       : res.status(400).json({ message: "Something went wrong" });
+//   } catch (error) {
+//     console.log(error, "Error from backend line");
+//   }
+// };
+
 const updateProjectData = async (req, res) => {
+
   try {
-    const { projectName, taskName, taskDescription, status, hours } = req.body;
+    const { projectName, taskName, taskDescription, status, hours ,date,_id} = req.body;
     const updateProjectInfo = await TimeTracker.updateOne(
       {
-        _id: id,
+        _id:_id ,
       },
       {
         $set: {
@@ -86,6 +146,7 @@ const updateProjectData = async (req, res) => {
           taskDescription,
           status,
           hours,
+          date
         },
       }
     );
@@ -93,13 +154,72 @@ const updateProjectData = async (req, res) => {
       ? res.status(200).json({ updateProjectInfo })
       : res.status(400).json({ message: "Something went wrong" });
   } catch (error) {
-    console.log(error, "Error from backend line");
   }
 };
+
+const getWeekData = async (req, res) => {
+  try {
+    const { id } = req.params;
+    // const { weekFirstDateYear, weekLastDateYear } = req.body
+    const { weekFIrstDay, weekLastDay } = req.body;
+    const firstDate = weekFIrstDay.formatDate;
+    const lastDate = weekLastDay.formatDate;
+    const [weekFirstDateYear, weekFirstTime] = firstDate.split("T");
+    const [weekLastDateYear, weekLastTime] = lastDate.split("T");
+
+    if (weekFirstDateYear && weekLastDateYear) {
+      const filterdUsers = await TimeTracker.find({
+        userId: id,
+        date: {
+          $gte: weekFirstDateYear,
+          $lte: weekLastDateYear,
+        },
+      });
+      filterdUsers
+        ? res.status(200).json({ filterdUsers })
+        : res.status(400).json({ message: "Something went wrong" });
+    }
+  } catch (error) { }
+};
+
+const getDataOfWeek = async (req, res) => {
+  try {
+    const { id, weekFIrstDay, weekLastDay } = req.params;
+    console.log(weekFIrstDay, weekLastDay)
+   
+      const filterdUsers = await TimeTracker.find({
+        userId: id,
+        date: {
+          $gte: weekFIrstDay,
+          $lt: weekLastDay,
+        },
+      });
+      filterdUsers
+        ? res.status(200).json({ filterdUsers })
+        : res.status(400).json({ message: "Something went wrong" });
+   
+  } catch (error) { }
+};
+
+
+const getEditUserData = async (req, res) => {
+  const { id } = req.params;
+  const data = await TimeTracker.find({ _id: id });
+  if (data) {
+    res.status(200).json({ data })
+  } else {
+    res.status(400).json({ message: 'No data' })
+  }
+}
 
 module.exports = {
   getData,
   deleteData,
   postData,
   updateProjectData,
+  getAllData,
+  getLoggedUserData,
+  getWeekData,
+  getDataOfWeek,
+  getEditUserData
 };
