@@ -1,8 +1,4 @@
-const timetracker = require("../model/timeTracker");
 const TimeTracker = require("../model/timeTracker");
-const User = require("../model/user");
-const express = require("express");
-const app = express();
 
 const getData = async (req, res) => {
   try {
@@ -132,6 +128,7 @@ const updateCalendarData = async (req, res) => {
       : res.status(400).json({ message: "Something went wrong" });
   } catch (error) {}
 };
+
 
 module.exports = {
   getData,

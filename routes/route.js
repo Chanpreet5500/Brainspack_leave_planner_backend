@@ -2,6 +2,7 @@ const express = require("express");
 const passport = require("passport");
 const userController = require("../controllers/loginController");
 const timeTrackerController = require("../controllers/timeTrackerController");
+// const adminController = require("../controllers/adminController");
 const validations = require("../validations/validations");
 const router = express.Router();
 
@@ -9,6 +10,16 @@ router.post(
   "/register",
   validations.registerValidation,
   userController.registerUser
+);
+router.post(
+  "/registerAdmin",
+  validations.registerValidation,
+  userController.registerAdmin
+);
+router.post(
+  "/loginAdmin",
+  validations.loginValidation,
+  userController.loginAdmin
 );
 router.post("/login", validations.loginValidation, userController.loginUser);
 router.post("/verify", userController.verifyUser);
@@ -52,5 +63,6 @@ router.get(
   "/weekly-datas/:id/:weekFIrstDay/:weekLastDay",
   timeTrackerController.getDataOfWeek
 );
+router.get("/getEmpList", userController.getEmployeesList);
 
 module.exports = router;

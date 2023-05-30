@@ -1,4 +1,5 @@
 const User = require("../model/user");
+const Admin = require("../model/admin");
 const Leave = require("../model/leave");
 const passport = require("passport");
 const express = require("express");
@@ -98,6 +99,7 @@ const getStrategy = () => {
   };
 
   return new strategy(params, (req, res, callback) => {
+    console.log(res);
     User.findOne({ email: res.email }).then((data) => {
       if (!data) {
         return callback(null, false, {
@@ -429,9 +431,100 @@ const deleteUserById = async (req, res) => {
   }
 };
 
+const registerAdmin = async (req, res) => {
+  const reqPassword = req.body.password;
+
+  const hashedPassword = await bcrypt.hash(reqPassword, saltRounds);
+
+  const token = await getVerificationToken();
+
+  const adminData = await Admin.create({
+    email: req.body.email,
+    password: hashedPassword,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    verificationToken: token,
+  });
+
+  if (adminData) {
+    return res.status(200).json({
+      message: MESSAGE.SUCCESS.register,
+    });
+  } else {
+    return res.status(400).json({
+      message: MESSAGE.FAILURE.register,
+    });
+  }
+};
+
+const loginAdmin = async (req, res) => {
+  const password = req.body.password;
+
+  const adminData = await Admin.findOne({
+    email: req.body.email,
+  });
+
+  if (password == "") {
+    res.status(422).json({
+      message: MESSAGE.FAILURE.passwordField,
+    });
+  } else {
+    if (adminData) {
+      console.log(adminData, "adminData from backend");
+
+      const adminEmail = adminData.email;
+      const adminPassword = adminData.password;
+
+      let comparePassword = await passwordComparison(password, adminPassword);
+
+      if (comparePassword) {
+        const token = createToken(adminEmail);
+
+        res.status(200).json({
+          message: MESSAGE.SUCCESS.login,
+          token,
+          data: {
+            _id: adminData._id,
+            name: adminData.firstName + adminData.lastName,
+            firstName: adminData.firstName,
+            lastName: adminData.lastName,
+            email: adminEmail,
+            role: adminData.role,
+          },
+        });
+      } else {
+        res.status(422).json({
+          message: MESSAGE.FAILURE.credentials,
+        });
+      }
+    } else {
+      res.status(400).json({
+        message: MESSAGE.FAILURE.login,
+      });
+    }
+  }
+};
+
+// Get all employees list
+
+const getEmployeesList = async (req, res) => {
+  try {
+    const userList = await User.find();
+    if (userList) {
+      res.status(200).json({ userList });
+    } else {
+      res.status(404).json({ message: "Users not found !" });
+    }
+  } catch (error) {
+    console.log(error, "Error from backend");
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
+  loginAdmin,
+  registerAdmin,
   verifyUser,
   forgotPassword,
   resetPassword,
@@ -441,4 +534,5 @@ module.exports = {
   getStatisticsData,
   getLeaveDates,
   deleteUserById,
+  getEmployeesList,
 };
