@@ -130,7 +130,6 @@ const loginUser = async (req, res) => {
     });
   } else {
     if (userData) {
-      console.log(userData, "USERDATA");
       const userEmail = userData.email;
 
       const userDetail = User.findOne({ userEmail });
@@ -253,7 +252,7 @@ const resetPassword = async (req, res) => {
       }
     }
   } catch (err) {
-    console.log(err, "Error while reseting password");
+    // console.log(err, "Error while reseting password");
   }
 };
 
@@ -277,7 +276,6 @@ const registerViaGoogle = async (data) => {
 
 const getAllData = async (req, res) => {
   const { id } = req.params;
-  console.log(req.params, "request from database");
   const data = await User.findOne({ _id: id });
   if (data) {
     res.status(200).json({
@@ -418,7 +416,6 @@ const deleteUserById = async (req, res) => {
       leaveAvailable: loggedInUser.leaveAvailable + data.deletedCount,
     });
 
-    console.log(updatedUserLeaves, "UPDATE");
 
     if (updatedUserLeaves) {
       res.status(200).json({
