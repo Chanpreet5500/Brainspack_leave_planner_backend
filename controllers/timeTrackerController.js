@@ -87,7 +87,6 @@ const deleteData = async (req, res) => {
 const getDataOfWeek = async (req, res) => {
   try {
     const { id, weekFIrstDay, weekLastDay } = req.params;
-    console.log(id,weekFIrstDay,weekLastDay,'hello api')
 
     const filterdUsers = await TimeTracker.find({
       userId: id,
