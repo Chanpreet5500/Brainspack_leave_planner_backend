@@ -1,4 +1,4 @@
-const timetracker = require("../model/timeTracker");
+
 const TimeTracker = require("../model/timeTracker");
 const User = require("../model/user");
 const express = require("express");
@@ -18,37 +18,31 @@ const getData = async (req, res) => {
   }
 };
 
-// const postData = async (req, res) => {
-//   try {
-//     const data = req.body;
-//     try {
-//       const sendData = await TimeTracker.insertMany(data);
-//       if (sendData) {
-//         res.status(200).json(sendData);
-//       } else {
-//         res.status(500).json({ message: "Something went wrong" });
-//       }
-//     } catch (e) {
-//       return e;
-//     }
-//   } catch (err) {
-//     res.status(400).json({ message: "Something went wrong" });
-//   }
-// };
+const postData = async (req, res) => {
+  try {
+    const data = req.body;
+    try {
+      const sendData = await TimeTracker.insertMany(data);
+      if (sendData) {
+        res.status(200).json(sendData);
+      } else {
+        res.status(500).json({ message: "Something went wrong" });
+      }
+    } catch (e) {
+      return e;
+    }
+  } catch (err) {
+    res.status(400).json({ message: "Something went wrong" });
+  }
+};
 
 const getDataById = async (req, res) => {
   const { id } = req.params;
   console.log(req.params, 'Body console');
-  try {
-    if (id) {
-      const data = await TimeTracker.findOne({ _id: id });
-      console.log(data, "data from api");
-    }
-  } catch (err) {
-    res.status(400).send(err)
-  }
+ 
   try {
     const data = await TimeTracker.find({ _id: id });
+    console.log(data)
     if (data) {
       res.status(200).json({ data });
     } else {
@@ -83,19 +77,7 @@ const updateProjectData = async (req, res) => {
     : res.status(400).json({ message: "Something went wrong" });
 };
 
-// const deleteData = async (req, res) => {
-//   const { id } = req.params;
-//   try {
-//     if (id) {
-//       const deleteUser = await TimeTracker.findByIdAndDelete(id);
-//       res.send(deleteUser);
-//     } else {
-//       return res.status(400).send();
-//     }
-//   } catch (err) {
-//     res.status(500).send(err);
-//   }
-// };
+
 
 const getDataOfWeek = async (req, res) => {
   try {
@@ -108,6 +90,7 @@ const getDataOfWeek = async (req, res) => {
         $lt: weekLastDay,
       },
     });
+    console.log(filterdUsers,'filterdUSERSSSSS')
     filterdUsers
       ? res.status(200).json({ filterdUsers })
       : res.status(400).json({ message: "Something went wrong" });
@@ -138,7 +121,7 @@ const updateCalendarData = async (req, res) => {
     updateProjectInfo
       ? res.status(200).json({ updateProjectInfo })
       : res.status(400).json({ message: "Something went wrong" });
-  } catch (error) {}
+  } catch (error) { }
 };
 
 
@@ -158,30 +141,6 @@ const deleteData = async (req, res) => {
   }
 
 }
-const postData = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const data = req.body;
-    const { projectName, taskName, taskDescription, hours, status, date } =
-      data;
-    const newData = await TimeTracker.insertMany({
-      userId: id,
-      projectName,
-      taskName,
-      taskDescription,
-      hours,
-      status,
-      date,
-    });
-    if(newData){
-      res.status(200).json({ newData })
-    }else{
-      res.status(500).json({ message: "Something went wrong" });
-    }
-  } catch (err) {
-    res.status(400).json({ message: "Something went wrong" });
-  }
-};
 
 
 module.exports = {
