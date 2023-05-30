@@ -1,8 +1,4 @@
-
 const TimeTracker = require("../model/timeTracker");
-const User = require("../model/user");
-const express = require("express");
-const app = express();
 
 const getData = async (req, res) => {
   try {
@@ -150,5 +146,5 @@ module.exports = {
   deleteData,
   getDataById,
   getDataOfWeek,
-  updateCalendarData
+  updateCalendarData,
 };
