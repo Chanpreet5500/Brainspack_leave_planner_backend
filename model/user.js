@@ -69,6 +69,9 @@ const schema = mongoose.Schema({
   },
   birthDate : {
     type : String
+  },
+  role: {
+    type: String,
   }
 });
 

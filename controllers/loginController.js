@@ -1,5 +1,4 @@
 const User = require("../model/user");
-const Admin = require("../model/admin");
 const Leave = require("../model/leave");
 const passport = require("passport");
 const express = require("express");
@@ -124,6 +123,7 @@ const loginUser = async (req, res) => {
 
   const userData = await User.findOne({
     email: req.body.email,
+    role: req.body.role
   });
 
   if (password == "") {
@@ -155,6 +155,7 @@ const loginUser = async (req, res) => {
             birthDate: userData.birthDate,
             email: userEmail,
             designation: userData.designation,
+            role: userData.role,
           },
         });
       } else {
@@ -433,36 +434,10 @@ const deleteUserById = async (req, res) => {
   }
 };
 
-const registerAdmin = async (req, res) => {
-  const reqPassword = req.body.password;
-
-  const hashedPassword = await bcrypt.hash(reqPassword, saltRounds);
-
-  const token = await getVerificationToken();
-
-  const adminData = await Admin.create({
-    email: req.body.email,
-    password: hashedPassword,
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    verificationToken: token,
-  });
-
-  if (adminData) {
-    return res.status(200).json({
-      message: MESSAGE.SUCCESS.register,
-    });
-  } else {
-    return res.status(400).json({
-      message: MESSAGE.FAILURE.register,
-    });
-  }
-};
-
 const loginAdmin = async (req, res) => {
   const password = req.body.password;
 
-  const adminData = await Admin.findOne({
+  const adminData = await User.findOne({
     email: req.body.email,
   });
 
@@ -526,7 +501,6 @@ module.exports = {
   registerUser,
   loginUser,
   loginAdmin,
-  registerAdmin,
   verifyUser,
   forgotPassword,
   resetPassword,
