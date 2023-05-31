@@ -17,7 +17,6 @@ const schema = mongoose.Schema({
     type: String,
     require: true,
   },
-
   password: {
     type: String,
     require: true,
@@ -70,10 +69,10 @@ const schema = mongoose.Schema({
   birthDate : {
     type : String
   },
-  role: {
-    type: String,
-    default: "client"
-  }
+  roleId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "UserRole",
+  },
 });
 
 const user = mongoose.model("User", schema);
