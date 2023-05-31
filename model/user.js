@@ -72,6 +72,7 @@ const schema = mongoose.Schema({
   },
   role: {
     type: String,
+    default: "client"
   }
 });
 
