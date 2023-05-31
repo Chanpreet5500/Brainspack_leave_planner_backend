@@ -375,8 +375,9 @@ const getStatisticsData = async (req, res) => {
 const getLeaveDates = async (req, res) => {
   const userId = req.params.id;
   const userType = req.params.userType;
+  console.log(userId, userType,'leave')
 
-  if (userId) {
+  if (userId!='all-users') {
     if (userType === "my_leave") {
       const data = await Leave.find({ userId: userId }).populate("userId");
 
@@ -396,9 +397,27 @@ const getLeaveDates = async (req, res) => {
       }
     }
   } else {
-    res.status(400).json({
-      message: MESSAGE.FAILURE.login,
-    });
+    const data = await Leave.find().populate("userId");
+
+    if (data) {
+      res.status(200).json({
+        message: MESSAGE.SUCCESS.login,
+        data,
+      });
+    }
+   else {
+    const data = await Leave.find().populate("userId");
+    if (data) {
+      res.status(200).json({
+        message: MESSAGE.SUCCESS.login,
+        data,
+      });
+    }
+  }
+
+    // res.status(400).json({
+    //   message: MESSAGE.FAILURE.login,
+    // });
   }
 };
 
