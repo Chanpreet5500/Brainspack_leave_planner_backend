@@ -486,7 +486,9 @@ const loginAdmin = async (req, res) => {
 
 const getEmployeesList = async (req, res) => {
   try {
-    const userList = await User.find();
+    const userList = await User.find({
+      role: "client",
+    });
     if (userList) {
       res.status(200).json({ userList });
     } else {
