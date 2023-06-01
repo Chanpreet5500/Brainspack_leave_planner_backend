@@ -510,8 +510,9 @@ const loginAdmin = async (req, res) => {
 
 const getEmployeesList = async (req, res) => {
   try {
+    const userAuth = await userRole.find({ role: "client" });
     const userList = await User.find({
-      roleId: "64772ed5425ca105b9ffde76",
+      roleId: userAuth._id,
     });
     if (userList) {
       res.status(200).json({ userList });
