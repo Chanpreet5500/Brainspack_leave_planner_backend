@@ -54,12 +54,6 @@ router.delete("/delete-event/:id", userController.deleteUserById);
 
 
 
-// router.get("/users-data", timeTrackerController.getAllData);
-// router.get("/logged-user-data/:id", timeTrackerController.getLoggedUserData);
-// router.post('/weekly-data/:id',timeTrackerController.getWeekData);
-// router.get('/weekly-datas/:id/:weekFIrstDay/:weekLastDay',timeTrackerController.getDataOfWeek);
-// router.get('/edituserdata/:id',timeTrackerController.getEditUserData);
-// router.patch("/update", timeTrackerController.updateProjectData);
 
 
 
