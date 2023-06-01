@@ -405,7 +405,7 @@ const getLeaveDates = async (req, res) => {
           data,
         });
       }
-    }
+    } 
   } else {
     const data = await Leave.find().populate("userId");
 
@@ -513,7 +513,7 @@ const loginAdmin = async (req, res) => {
 const getEmployeesList = async (req, res) => {
   try {
     const userList = await User.find({
-      role: "client",
+      roleId: "647825a1db63683f35e337d8"
     });
     if (userList) {
       res.status(200).json({ userList });
