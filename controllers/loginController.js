@@ -1,5 +1,6 @@
 const User = require("../model/user");
 const Leave = require("../model/leave");
+const TimeTracker = require("../model/timeTracker");
 const passport = require("passport");
 const express = require("express");
 const app = express();
@@ -469,7 +470,6 @@ const loginAdmin = async (req, res) => {
     });
   } else {
     if (adminData) {
-
       const adminEmail = adminData.email;
       const adminPassword = adminData.password;
 
@@ -522,6 +522,33 @@ const getEmployeesList = async (req, res) => {
   }
 };
 
+const updateProjectStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log(id);
+    const { status } = req.body;
+    console.log(status);
+    const updateProjectInfo = await TimeTracker.updateOne(
+      {
+        _id: id,
+      },
+      {
+        $set: {
+          status,
+        },
+      }
+    );
+    console.log(updateProjectInfo, 'projectinfo');
+    if (updateProjectInfo) {
+      res.status(200).json({ message: "Status updated" });
+    } else {
+      res.status(422).json({ message: "Status update failed" });
+    }
+  } catch (error) {
+    return error;
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -536,4 +563,5 @@ module.exports = {
   getLeaveDates,
   deleteUserById,
   getEmployeesList,
+  updateProjectStatus,
 };
