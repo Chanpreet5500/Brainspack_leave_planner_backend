@@ -385,7 +385,7 @@ const getLeaveDates = async (req, res) => {
   const userId = req.params.id;
   const userType = req.params.userType;
 
-  if (userId!='all-users') {
+  if (userId != "all-users") {
     if (userType === "my_leave") {
       const data = await Leave.find({ userId: userId }).populate("userId");
 
@@ -403,7 +403,7 @@ const getLeaveDates = async (req, res) => {
           data,
         });
       }
-    } 
+    }
   } else {
     const data = await Leave.find().populate("userId");
 
@@ -412,16 +412,15 @@ const getLeaveDates = async (req, res) => {
         message: MESSAGE.SUCCESS.login,
         data,
       });
+    } else {
+      const data = await Leave.find().populate("userId");
+      if (data) {
+        res.status(200).json({
+          message: MESSAGE.SUCCESS.login,
+          data,
+        });
+      }
     }
-   else {
-    const data = await Leave.find().populate("userId");
-    if (data) {
-      res.status(200).json({
-        message: MESSAGE.SUCCESS.login,
-        data,
-      });
-    }
-  }
 
     // res.status(400).json({
     //   message: MESSAGE.FAILURE.login,
@@ -444,7 +443,6 @@ const deleteUserById = async (req, res) => {
       leaveTaken: loggedInUser.leaveTaken - data.deletedCount,
       leaveAvailable: loggedInUser.leaveAvailable + data.deletedCount,
     });
-
 
     if (updatedUserLeaves) {
       res.status(200).json({
@@ -509,8 +507,10 @@ const loginAdmin = async (req, res) => {
 
 const getEmployeesList = async (req, res) => {
   try {
+    const userAuth = await userRole.find({ role: "client" });
+    console.log(userAuth);
     const userList = await User.find({
-      roleId: "647825a1db63683f35e337d8"
+      roleId: userAuth[0]._id,
     });
     if (userList) {
       res.status(200).json({ userList });
