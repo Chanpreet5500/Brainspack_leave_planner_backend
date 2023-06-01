@@ -24,7 +24,9 @@
         "leaveTaken" : "Unable to apply the leave",
         "notEnoughLeave" : "There are not enough leave available",
         "leavePlaced" : "Leave already placed on this state",
-        "deleteEvent"  : "Unable to delete Holiday"
+        "deleteEvent"  : "Unable to delete Holiday",
+        "notAnAdmin" : "You are not an Admin",
+        "notAClient" : "You are not a Client"
     },
 
     "VALIDATION": {

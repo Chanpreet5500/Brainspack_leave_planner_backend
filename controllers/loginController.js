@@ -1,5 +1,4 @@
 const User = require("../model/user");
-const Admin = require("../model/admin");
 const Leave = require("../model/leave");
 const passport = require("passport");
 const express = require("express");
@@ -12,7 +11,7 @@ const extract_jwt = require("passport-jwt").ExtractJwt;
 const jwt = require("jsonwebtoken");
 const MESSAGE = require("../constant/constant.json");
 const differenceInDays = require("date-fns/differenceInDays/index.js");
-const user = require("../model/user");
+const userRole = require("../model/userRole");
 
 const passwordComparison = async (bodyValue, storedValue) => {
   return bcrypt.compare(bodyValue, storedValue);
@@ -25,6 +24,8 @@ const registerUser = async (req, res) => {
 
   const token = await getVerificationToken();
 
+  const role = await userRole.findOne({ role: "client" });
+
   const userData = await User.create({
     email: req.body.email,
     password: hashedPassword,
@@ -35,6 +36,7 @@ const registerUser = async (req, res) => {
     designation: req.body.designation,
     verificationToken: token,
     birthDate: req.body.birthdate,
+    roleId: role._id,
   });
 
   if (userData) {
@@ -124,17 +126,25 @@ const loginUser = async (req, res) => {
 
   const userData = await User.findOne({
     email: req.body.email,
-  });
+  }).populate("roleId");
 
   if (password == "") {
     res.status(422).json({
       message: MESSAGE.FAILURE.passwordField,
     });
+  } else if (userData?.roleId?.role != req.body.role) {
+    if (req.body.role == "admin") {
+      res.status(422).json({
+        message: MESSAGE.FAILURE.notAnAdmin,
+      });
+    } else {
+      res.status(422).json({
+        message: MESSAGE.FAILURE.notAClient,
+      });
+    }
   } else {
     if (userData) {
       const userEmail = userData.email;
-
-      const userDetail = User.findOne({ userEmail });
 
       const userPassword = userData.password;
 
@@ -154,6 +164,7 @@ const loginUser = async (req, res) => {
             birthDate: userData.birthDate,
             email: userEmail,
             designation: userData.designation,
+            role: userData.roleId.role,
           },
         });
       } else {
@@ -260,7 +271,6 @@ const resetPassword = async (req, res) => {
 
 const registerViaGoogle = async (data) => {
   const userDetails = data;
-  // console.log(userDetails, 'userDetails')
   const formData = {
     firstName: userDetails?.given_name,
     lastName: userDetails?.family_name,
@@ -450,36 +460,10 @@ const deleteUserById = async (req, res) => {
   }
 };
 
-const registerAdmin = async (req, res) => {
-  const reqPassword = req.body.password;
-
-  const hashedPassword = await bcrypt.hash(reqPassword, saltRounds);
-
-  const token = await getVerificationToken();
-
-  const adminData = await Admin.create({
-    email: req.body.email,
-    password: hashedPassword,
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    verificationToken: token,
-  });
-
-  if (adminData) {
-    return res.status(200).json({
-      message: MESSAGE.SUCCESS.register,
-    });
-  } else {
-    return res.status(400).json({
-      message: MESSAGE.FAILURE.register,
-    });
-  }
-};
-
 const loginAdmin = async (req, res) => {
   const password = req.body.password;
 
-  const adminData = await Admin.findOne({
+  const adminData = await User.findOne({
     email: req.body.email,
   });
 
@@ -528,7 +512,9 @@ const loginAdmin = async (req, res) => {
 
 const getEmployeesList = async (req, res) => {
   try {
-    const userList = await User.find();
+    const userList = await User.find({
+      role: "client",
+    });
     if (userList) {
       res.status(200).json({ userList });
     } else {
@@ -543,7 +529,6 @@ module.exports = {
   registerUser,
   loginUser,
   loginAdmin,
-  registerAdmin,
   verifyUser,
   forgotPassword,
   resetPassword,
