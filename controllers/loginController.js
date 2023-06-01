@@ -144,7 +144,6 @@ const loginUser = async (req, res) => {
     }
   } else {
     if (userData) {
-      console.log(userData, "USERDATA");
       const userEmail = userData.email;
 
       const userPassword = userData.password;
@@ -266,7 +265,7 @@ const resetPassword = async (req, res) => {
       }
     }
   } catch (err) {
-    console.log(err, "Error while reseting password");
+    // console.log(err, "Error while reseting password");
   }
 };
 
@@ -386,8 +385,9 @@ const getStatisticsData = async (req, res) => {
 const getLeaveDates = async (req, res) => {
   const userId = req.params.id;
   const userType = req.params.userType;
+  console.log(userId, userType,'leave')
 
-  if (userId) {
+  if (userId!='all-users') {
     if (userType === "my_leave") {
       const data = await Leave.find({ userId: userId }).populate("userId");
 
@@ -405,11 +405,29 @@ const getLeaveDates = async (req, res) => {
           data,
         });
       }
-    }
+    } 
   } else {
-    res.status(400).json({
-      message: MESSAGE.FAILURE.login,
-    });
+    const data = await Leave.find().populate("userId");
+
+    if (data) {
+      res.status(200).json({
+        message: MESSAGE.SUCCESS.login,
+        data,
+      });
+    }
+   else {
+    const data = await Leave.find().populate("userId");
+    if (data) {
+      res.status(200).json({
+        message: MESSAGE.SUCCESS.login,
+        data,
+      });
+    }
+  }
+
+    // res.status(400).json({
+    //   message: MESSAGE.FAILURE.login,
+    // });
   }
 };
 
@@ -429,7 +447,6 @@ const deleteUserById = async (req, res) => {
       leaveAvailable: loggedInUser.leaveAvailable + data.deletedCount,
     });
 
-    console.log(updatedUserLeaves, "UPDATE");
 
     if (updatedUserLeaves) {
       res.status(200).json({
@@ -496,7 +513,7 @@ const loginAdmin = async (req, res) => {
 const getEmployeesList = async (req, res) => {
   try {
     const userList = await User.find({
-      role: "client",
+      roleId: "647825a1db63683f35e337d8"
     });
     if (userList) {
       res.status(200).json({ userList });
