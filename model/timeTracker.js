@@ -27,7 +27,6 @@ const schema = new mongoose.Schema({
   },
   date: {
     type: Date,
-    default: Date.now,
     require: true,
     default: Date.now(),
   },
