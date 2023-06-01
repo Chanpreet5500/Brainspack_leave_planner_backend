@@ -1,5 +1,6 @@
 const User = require("../model/user");
 const Leave = require("../model/leave");
+const TimeTracker = require("../model/timeTracker");
 const passport = require("passport");
 const express = require("express");
 const app = express();
@@ -101,7 +102,6 @@ const getStrategy = () => {
   };
 
   return new strategy(params, (req, res, callback) => {
-    console.log(res);
     User.findOne({ email: res.email }).then((data) => {
       if (!data) {
         return callback(null, false, {
@@ -385,7 +385,6 @@ const getStatisticsData = async (req, res) => {
 const getLeaveDates = async (req, res) => {
   const userId = req.params.id;
   const userType = req.params.userType;
-  console.log(userId, userType, "leave");
 
   if (userId != "all-users") {
     if (userType === "my_leave") {
@@ -471,8 +470,6 @@ const loginAdmin = async (req, res) => {
     });
   } else {
     if (adminData) {
-      console.log(adminData, "adminData from backend");
-
       const adminEmail = adminData.email;
       const adminPassword = adminData.password;
 
@@ -511,7 +508,6 @@ const loginAdmin = async (req, res) => {
 const getEmployeesList = async (req, res) => {
   try {
     const userAuth = await userRole.find({ role: "client" });
-
     const userList = await User.find({
       roleId: userAuth[0]._id,
     });
@@ -522,7 +518,34 @@ const getEmployeesList = async (req, res) => {
       res.status(404).json({ message: "Users not found !" });
     }
   } catch (error) {
-    console.log(error, "Error from backend");
+    // console.log(error, "Error from backend");
+  }
+};
+
+const updateProjectStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log(id);
+    const { status } = req.body;
+    console.log(status);
+    const updateProjectInfo = await TimeTracker.updateOne(
+      {
+        _id: id,
+      },
+      {
+        $set: {
+          status,
+        },
+      }
+    );
+    console.log(updateProjectInfo, 'projectinfo');
+    if (updateProjectInfo) {
+      res.status(200).json({ message: "Status updated" });
+    } else {
+      res.status(422).json({ message: "Status update failed" });
+    }
+  } catch (error) {
+    return error;
   }
 };
 
@@ -540,4 +563,5 @@ module.exports = {
   getLeaveDates,
   deleteUserById,
   getEmployeesList,
+  updateProjectStatus,
 };

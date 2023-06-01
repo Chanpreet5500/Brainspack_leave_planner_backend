@@ -46,15 +46,6 @@ router.post("/leave", userController.leaveData);
 router.get("/statistic", userController.getStatisticsData);
 router.get("/leave-data/:id/:userType", userController.getLeaveDates);
 router.delete("/delete-event/:id", userController.deleteUserById);
-
-
-
-
-
-
-
-
-
 router.get("/testData/:id", timeTrackerController.getData);
 router.get("/getDataById/:id", timeTrackerController.getDataById);
 router.post("/sendData/:id", timeTrackerController.postData);
@@ -66,5 +57,6 @@ router.get(
   timeTrackerController.getDataOfWeek
 );
 router.get("/getEmpList", userController.getEmployeesList);
+router.patch("/updateStatus/:id", userController.updateProjectStatus);
 
 module.exports = router;
