@@ -101,7 +101,6 @@ const getStrategy = () => {
   };
 
   return new strategy(params, (req, res, callback) => {
-    console.log(res);
     User.findOne({ email: res.email }).then((data) => {
       if (!data) {
         return callback(null, false, {
@@ -385,7 +384,6 @@ const getStatisticsData = async (req, res) => {
 const getLeaveDates = async (req, res) => {
   const userId = req.params.id;
   const userType = req.params.userType;
-  console.log(userId, userType,'leave')
 
   if (userId!='all-users') {
     if (userType === "my_leave") {
@@ -473,7 +471,6 @@ const loginAdmin = async (req, res) => {
     });
   } else {
     if (adminData) {
-      console.log(adminData, "adminData from backend");
 
       const adminEmail = adminData.email;
       const adminPassword = adminData.password;
@@ -521,7 +518,7 @@ const getEmployeesList = async (req, res) => {
       res.status(404).json({ message: "Users not found !" });
     }
   } catch (error) {
-    console.log(error, "Error from backend");
+    // console.log(error, "Error from backend");
   }
 };
 
