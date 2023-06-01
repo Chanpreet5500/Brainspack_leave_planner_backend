@@ -10,6 +10,11 @@ router.post(
   validations.registerValidation,
   userController.registerUser
 );
+router.post(
+  "/loginAdmin",
+  validations.loginValidation,
+  userController.loginAdmin
+);
 router.post("/login", validations.loginValidation, userController.loginUser);
 router.post("/verify", userController.verifyUser);
 router.post("/forgot-password", userController.forgotPassword);
@@ -42,15 +47,16 @@ router.get("/statistic", userController.getStatisticsData);
 router.get("/leave-data/:id/:userType", userController.getLeaveDates);
 router.delete("/delete-event/:id", userController.deleteUserById);
 
-router.delete("/delete-user/:id", timeTrackerController.deleteData);
-router.post("/sendData/:id", timeTrackerController.postData);
 router.get("/testData/:id", timeTrackerController.getData);
+router.get("/getDataById/:id", timeTrackerController.getDataById);
+router.post("/sendData/:id", timeTrackerController.postData);
+router.delete("/delete-user/:id", timeTrackerController.deleteData);
 router.patch("/update/:id", timeTrackerController.updateProjectData);
-router.get("/users-data", timeTrackerController.getAllData);
-router.get("/logged-user-data/:id", timeTrackerController.getLoggedUserData);
-router.post('/weekly-data/:id',timeTrackerController.getWeekData);
-router.get('/weekly-datas/:id/:weekFIrstDay/:weekLastDay',timeTrackerController.getDataOfWeek);
-router.get('/edituserdata/:id',timeTrackerController.getEditUserData);
-router.patch("/update", timeTrackerController.updateProjectData);
+router.patch("/updateCalendar", timeTrackerController.updateCalendarData);
+router.get(
+  "/weekly-datas/:id/:weekFIrstDay/:weekLastDay",
+  timeTrackerController.getDataOfWeek
+);
+router.get("/getEmpList", userController.getEmployeesList);
 
 module.exports = router;

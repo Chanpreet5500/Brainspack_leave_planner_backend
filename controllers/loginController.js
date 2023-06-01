@@ -11,7 +11,7 @@ const extract_jwt = require("passport-jwt").ExtractJwt;
 const jwt = require("jsonwebtoken");
 const MESSAGE = require("../constant/constant.json");
 const differenceInDays = require("date-fns/differenceInDays/index.js");
-const user = require("../model/user");
+const userRole = require("../model/userRole");
 
 const passwordComparison = async (bodyValue, storedValue) => {
   return bcrypt.compare(bodyValue, storedValue);
@@ -24,6 +24,8 @@ const registerUser = async (req, res) => {
 
   const token = await getVerificationToken();
 
+  const role = await userRole.findOne({ role: "client" });
+
   const userData = await User.create({
     email: req.body.email,
     password: hashedPassword,
@@ -34,6 +36,7 @@ const registerUser = async (req, res) => {
     designation: req.body.designation,
     verificationToken: token,
     birthDate: req.body.birthdate,
+    roleId: role._id,
   });
 
   if (userData) {
@@ -98,6 +101,7 @@ const getStrategy = () => {
   };
 
   return new strategy(params, (req, res, callback) => {
+    console.log(res);
     User.findOne({ email: res.email }).then((data) => {
       if (!data) {
         return callback(null, false, {
@@ -122,18 +126,25 @@ const loginUser = async (req, res) => {
 
   const userData = await User.findOne({
     email: req.body.email,
-  });
+  }).populate("roleId");
 
   if (password == "") {
     res.status(422).json({
       message: MESSAGE.FAILURE.passwordField,
     });
+  } else if (userData?.roleId?.role != req.body.role) {
+    if (req.body.role == "admin") {
+      res.status(422).json({
+        message: MESSAGE.FAILURE.notAnAdmin,
+      });
+    } else {
+      res.status(422).json({
+        message: MESSAGE.FAILURE.notAClient,
+      });
+    }
   } else {
     if (userData) {
-      console.log(userData, "USERDATA");
       const userEmail = userData.email;
-
-      const userDetail = User.findOne({ userEmail });
 
       const userPassword = userData.password;
 
@@ -153,6 +164,7 @@ const loginUser = async (req, res) => {
             birthDate: userData.birthDate,
             email: userEmail,
             designation: userData.designation,
+            role: userData.roleId.role,
           },
         });
       } else {
@@ -253,7 +265,7 @@ const resetPassword = async (req, res) => {
       }
     }
   } catch (err) {
-    console.log(err, "Error while reseting password");
+    // console.log(err, "Error while reseting password");
   }
 };
 
@@ -276,7 +288,6 @@ const registerViaGoogle = async (data) => {
 
 const getAllData = async (req, res) => {
   const { id } = req.params;
-  console.log(req.params, "request from database");
   const data = await User.findOne({ _id: id });
   if (data) {
     res.status(200).json({
@@ -374,8 +385,9 @@ const getStatisticsData = async (req, res) => {
 const getLeaveDates = async (req, res) => {
   const userId = req.params.id;
   const userType = req.params.userType;
+  console.log(userId, userType, "leave");
 
-  if (userId) {
+  if (userId != "all-users") {
     if (userType === "my_leave") {
       const data = await Leave.find({ userId: userId }).populate("userId");
 
@@ -395,9 +407,26 @@ const getLeaveDates = async (req, res) => {
       }
     }
   } else {
-    res.status(400).json({
-      message: MESSAGE.FAILURE.login,
-    });
+    const data = await Leave.find().populate("userId");
+
+    if (data) {
+      res.status(200).json({
+        message: MESSAGE.SUCCESS.login,
+        data,
+      });
+    } else {
+      const data = await Leave.find().populate("userId");
+      if (data) {
+        res.status(200).json({
+          message: MESSAGE.SUCCESS.login,
+          data,
+        });
+      }
+    }
+
+    // res.status(400).json({
+    //   message: MESSAGE.FAILURE.login,
+    // });
   }
 };
 
@@ -417,8 +446,6 @@ const deleteUserById = async (req, res) => {
       leaveAvailable: loggedInUser.leaveAvailable + data.deletedCount,
     });
 
-    console.log(updatedUserLeaves, "UPDATE");
-
     if (updatedUserLeaves) {
       res.status(200).json({
         message: MESSAGE.SUCCESS.deleteEvent,
@@ -431,9 +458,77 @@ const deleteUserById = async (req, res) => {
   }
 };
 
+const loginAdmin = async (req, res) => {
+  const password = req.body.password;
+
+  const adminData = await User.findOne({
+    email: req.body.email,
+  });
+
+  if (password == "") {
+    res.status(422).json({
+      message: MESSAGE.FAILURE.passwordField,
+    });
+  } else {
+    if (adminData) {
+      console.log(adminData, "adminData from backend");
+
+      const adminEmail = adminData.email;
+      const adminPassword = adminData.password;
+
+      let comparePassword = await passwordComparison(password, adminPassword);
+
+      if (comparePassword) {
+        const token = createToken(adminEmail);
+
+        res.status(200).json({
+          message: MESSAGE.SUCCESS.login,
+          token,
+          data: {
+            _id: adminData._id,
+            name: adminData.firstName + adminData.lastName,
+            firstName: adminData.firstName,
+            lastName: adminData.lastName,
+            email: adminEmail,
+            role: adminData.role,
+          },
+        });
+      } else {
+        res.status(422).json({
+          message: MESSAGE.FAILURE.credentials,
+        });
+      }
+    } else {
+      res.status(400).json({
+        message: MESSAGE.FAILURE.login,
+      });
+    }
+  }
+};
+
+// Get all employees list
+
+const getEmployeesList = async (req, res) => {
+  try {
+    const userAuth = await userRole.find({ role: "client" });
+    console.log(userAuth);
+    const userList = await User.find({
+      roleId: userAuth[0]._id,
+    });
+    if (userList) {
+      res.status(200).json({ userList });
+    } else {
+      res.status(404).json({ message: "Users not found !" });
+    }
+  } catch (error) {
+    console.log(error, "Error from backend");
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
+  loginAdmin,
   verifyUser,
   forgotPassword,
   resetPassword,
@@ -443,4 +538,5 @@ module.exports = {
   getStatisticsData,
   getLeaveDates,
   deleteUserById,
+  getEmployeesList,
 };
