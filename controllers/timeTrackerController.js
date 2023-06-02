@@ -119,7 +119,7 @@ const updateCalendarData = async (req, res) => {
   }
 };
 
-const deleteData = async (req, res) => {
+const deleteTimeTrackerData = async (req, res) => {
   const { id } = req.params;
   try {
     if (id) {
@@ -141,7 +141,7 @@ module.exports = {
   getTimeTrackerData,
   updateProjectData,
   setTimeTrackerData,
-  deleteData,
+  deleteTimeTrackerData,
   getDataById,
   getDataByWeek,
   updateCalendarData,

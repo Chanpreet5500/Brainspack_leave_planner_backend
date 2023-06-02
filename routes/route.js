@@ -50,7 +50,7 @@ router.delete("/delete-event/:id", userController.deleteUserById);
 router.get("/getTimeTrackerData/:id", timeTrackerController.getTimeTrackerData);
 router.get("/getDataById/:id", timeTrackerController.getDataById);
 router.post("/setTimeTrackerData/:id", timeTrackerController.setTimeTrackerData);
-router.delete("/delete-user/:id", timeTrackerController.deleteData);
+router.delete("/deleteTimeTrackerData/:id", timeTrackerController.deleteTimeTrackerData);
 router.patch("/update/:id", timeTrackerController.updateProjectData);
 router.patch("/updateCalendar", timeTrackerController.updateCalendarData);
 router.get(
