@@ -13,6 +13,7 @@ const jwt = require("jsonwebtoken");
 const MESSAGE = require("../constant/constant.json");
 const differenceInDays = require("date-fns/differenceInDays/index.js");
 const userRole = require("../model/userRole");
+const user = require("../model/user");
 
 const passwordComparison = async (bodyValue, storedValue) => {
   return bcrypt.compare(bodyValue, storedValue);
@@ -385,8 +386,7 @@ const getStatisticsData = async (req, res) => {
 const getLeaveDates = async (req, res) => {
   const userId = req.params.id;
   const userType = req.params.userType;
-
-  if (userId != "all-users") {
+  if (userId) {
     if (userType === "my_leave") {
       const data = await Leave.find({ userId: userId }).populate("userId");
 
@@ -406,7 +406,17 @@ const getLeaveDates = async (req, res) => {
       }
     }
   } else {
-    const data = await Leave.find().populate("userId");
+    res.status(400).json({
+      message: MESSAGE.FAILURE.login,
+    });
+  }
+};
+
+const getLeavesForAdminPanel = async (req, res) => {
+  const userId = req.params.id;
+
+  if (userId != "all-users") {
+    const data = await Leave.find({ userId: userId }).populate("userId");
 
     if (data) {
       res.status(200).json({
@@ -414,18 +424,30 @@ const getLeaveDates = async (req, res) => {
         data,
       });
     } else {
-      const data = await Leave.find().populate("userId");
-      if (data) {
-        res.status(200).json({
-          message: MESSAGE.SUCCESS.login,
-          data,
-        });
-      }
+      res.status(400).json({
+        message: MESSAGE.FAILURE.login,
+      });
     }
+  } else {
+    const employeesRoleId= await userRole.find({role:'client'});
+    const employeesList = await user.find({roleId:employeesRoleId[0]._id});
+    let employeeArr = []
+    
 
-    // res.status(400).json({
-    //   message: MESSAGE.FAILURE.login,
-    // });
+    for(let i = 0; i < employeesList.length; i++){
+      const data = await Leave.find({userId:employeesList[i]._id}).populate("userId");
+      employeeArr.push(...data);
+    }
+    if (employeeArr) {
+      res.status(200).json({
+        message: MESSAGE.SUCCESS.login,
+        data:employeeArr,
+      });
+    } else {
+        res.status(400).json({
+          message: MESSAGE.FAILURE.login,
+        });
+    }
   }
 };
 
@@ -508,7 +530,6 @@ const loginAdmin = async (req, res) => {
 const getEmployeesList = async (req, res) => {
   try {
     const userAuth = await userRole.find({ role: "client" });
-    console.log(userAuth);
     const userList = await User.find({
       roleId: userAuth[0]._id,
     });
@@ -561,4 +582,5 @@ module.exports = {
   deleteUserById,
   getEmployeesList,
   updateProjectStatus,
+  getLeavesForAdminPanel,
 };
