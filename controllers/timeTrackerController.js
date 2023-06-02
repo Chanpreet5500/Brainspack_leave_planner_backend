@@ -10,8 +10,8 @@ const getTimeTrackerData = async (req, res) => {
     } else {
       res.status(400).json({ message: message.errorMessage });
     }
-  } catch (err) {
-    return err;
+  } catch (error) {
+    return error;
   }
 };
 

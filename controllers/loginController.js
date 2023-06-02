@@ -11,6 +11,7 @@ const strategy = require("passport-jwt").Strategy;
 const extract_jwt = require("passport-jwt").ExtractJwt;
 const jwt = require("jsonwebtoken");
 const MESSAGE = require("../constant/constant.json");
+const message = require("../constant/response.json");
 const userRole = require("../model/userRole");
 const user = require("../model/user");
 
@@ -387,7 +388,7 @@ const getLeaveDates = async (req, res) => {
 const getLeavesForAdminPanel = async (req, res) => {
   const userId = req.params.id;
 
-  if (userId != "all-users") {
+  if (userId != message.allUsers) {
     const data = await Leave.find({ userId: userId }).populate("userId");
 
     if (data) {
