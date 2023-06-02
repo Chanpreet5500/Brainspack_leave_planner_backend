@@ -11,7 +11,6 @@ const strategy = require("passport-jwt").Strategy;
 const extract_jwt = require("passport-jwt").ExtractJwt;
 const jwt = require("jsonwebtoken");
 const MESSAGE = require("../constant/constant.json");
-const differenceInDays = require("date-fns/differenceInDays/index.js");
 const userRole = require("../model/userRole");
 const user = require("../model/user");
 
@@ -66,29 +65,6 @@ const getVerificationToken = async () => {
   return tokenn;
 };
 
-// async function myPromise(){
-//   const myNewPromise = new Promise (function(myResolve, myReject){
-
-//     let x = "ABC"
-
-//     if(x == "ABC"){
-//       myResolve("ABC")
-//     } else {
-//       myReject("ERROR")
-//     }
-
-//   })
-
-//   return myNewPromise;
-// }
-
-// async function getPromise() {
-//   const finalPromise = await myPromise();
-//   console.log(finalPromise)
-// }
-
-// getPromise();
-
 const initialize = () => {
   passport.use("local", getStrategy());
   passport.session();
@@ -106,7 +82,7 @@ const getStrategy = () => {
     User.findOne({ email: res.email }).then((data) => {
       if (!data) {
         return callback(null, false, {
-          message: "Cannot find the appropriate user",
+          message: MESSAGE.FAILURE.userError,
         });
       } else {
         return callback(null, data);
@@ -234,8 +210,6 @@ const resetPassword = async (req, res) => {
     const verificationToken = req.body.token;
     const confirmPassword = req.body.confirmPassword;
 
-    // const existingPassword = req.body.oldPassword;
-
     const newUserPassword = await bcrypt.hash(newPassword, saltRounds);
 
     const userToken = await User.findOne({
@@ -243,8 +217,6 @@ const resetPassword = async (req, res) => {
     });
 
     if (userToken) {
-      // const userPassword = userToken.password;
-
       const comparePassword = await passwordComparison(
         confirmPassword,
         newUserPassword
@@ -266,7 +238,7 @@ const resetPassword = async (req, res) => {
       }
     }
   } catch (err) {
-    // console.log(err, "Error while reseting password");
+    return err;
   }
 };
 
@@ -429,24 +401,25 @@ const getLeavesForAdminPanel = async (req, res) => {
       });
     }
   } else {
-    const employeesRoleId= await userRole.find({role:'client'});
-    const employeesList = await user.find({roleId:employeesRoleId[0]._id});
-    let employeeArr = []
-    
+    const employeesRoleId = await userRole.find({ role: "client" });
+    const employeesList = await user.find({ roleId: employeesRoleId[0]._id });
+    let employeeArr = [];
 
-    for(let i = 0; i < employeesList.length; i++){
-      const data = await Leave.find({userId:employeesList[i]._id}).populate("userId");
+    for (let i = 0; i < employeesList.length; i++) {
+      const data = await Leave.find({ userId: employeesList[i]._id }).populate(
+        "userId"
+      );
       employeeArr.push(...data);
     }
     if (employeeArr) {
       res.status(200).json({
-        message: MESSAGE.SUCCESS.login,
-        data:employeeArr,
+        message: MESSAGE.SUCCESS.fetchedLeave,
+        data: employeeArr,
       });
     } else {
-        res.status(400).json({
-          message: MESSAGE.FAILURE.login,
-        });
+      res.status(400).json({
+        message: MESSAGE.FAILURE.fetchedLeave,
+      });
     }
   }
 };
@@ -525,8 +498,6 @@ const loginAdmin = async (req, res) => {
   }
 };
 
-// Get all employees list
-
 const getEmployeesList = async (req, res) => {
   try {
     const userAuth = await userRole.find({ role: "client" });
@@ -536,10 +507,10 @@ const getEmployeesList = async (req, res) => {
     if (userList) {
       res.status(200).json({ userList });
     } else {
-      res.status(404).json({ message: "Users not found !" });
+      res.status(404).json({ message: MESSAGE.FAILURE.userNotFound });
     }
   } catch (error) {
-    // console.log(error, "Error from backend");
+    return error;
   }
 };
 
@@ -558,9 +529,9 @@ const updateProjectStatus = async (req, res) => {
       }
     );
     if (updateProjectInfo) {
-      res.status(200).json({ message: "Status updated" });
+      res.status(200).json({ message: MESSAGE.SUCCESS.statusUpdated });
     } else {
-      res.status(422).json({ message: "Status update failed" });
+      res.status(422).json({ message: MESSAGE.FAILURE.statusUpdateFailed });
     }
   } catch (error) {
     return error;
