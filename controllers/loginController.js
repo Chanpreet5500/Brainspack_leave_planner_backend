@@ -525,9 +525,7 @@ const getEmployeesList = async (req, res) => {
 const updateProjectStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id);
     const { status } = req.body;
-    console.log(status);
     const updateProjectInfo = await TimeTracker.updateOne(
       {
         _id: id,
@@ -538,7 +536,6 @@ const updateProjectStatus = async (req, res) => {
         },
       }
     );
-    console.log(updateProjectInfo, 'projectinfo');
     if (updateProjectInfo) {
       res.status(200).json({ message: "Status updated" });
     } else {
