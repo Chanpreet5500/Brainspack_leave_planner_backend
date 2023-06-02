@@ -116,7 +116,6 @@ const updateCalendarData = async (req, res) => {
 
 const deleteData = async (req, res) => {
   const { id } = req.params;
-  console.log(id, "ID FROM DELETE API");
   try {
     if (id) {
       const deleteUser = await TimeTracker.findByIdAndDelete(id);
