@@ -45,6 +45,7 @@ router.get(
 router.post("/leave", userController.leaveData);
 router.get("/statistic", userController.getStatisticsData);
 router.get("/leave-data/:id/:userType", userController.getLeaveDates);
+router.get("/leave-data-admin/:id", userController.getLeavesForAdminPanel);
 router.delete("/delete-event/:id", userController.deleteUserById);
 router.get("/testData/:id", timeTrackerController.getData);
 router.get("/getDataById/:id", timeTrackerController.getDataById);
