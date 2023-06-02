@@ -8,7 +8,9 @@
         "newPassword" : "Your new password has been successfully applied",
         "getData"  : "Successfully fetched all data",
         "leaveTaken" : "Leave applied successfully",
-        "deleteEvent" : "Holiday Deleted Successfully" 
+        "deleteEvent" : "Holiday Deleted Successfully",
+        "statusUpdated" : "Status Updated !", 
+        "fetchedLeave" : "Leave fetched successfully"
     },
 
     "FAILURE" : {
@@ -26,12 +28,20 @@
         "leavePlaced" : "Leave already placed on this state",
         "deleteEvent"  : "Unable to delete Holiday",
         "notAnAdmin" : "You are not an Admin",
-        "notAClient" : "You are not a Client"
+        "notAClient" : "You are not a Client",
+        "userNotFound": "User not found !",
+        "statusUpdateFailed" : "Status update failed !",
+        "fetchedLeave" : "Unable to fetch leave",
+        "userError" : "Cannot find appropriate user"
     },
 
     "VALIDATION": {
         "emptyFields" : "Email and password fields must be filled",
         "emailType" : "Email must be in lower case and contains speacial character '@' ex:- abc@123.com"
 
+    }, 
+
+    "JWTKEY" : {
+        "secretKey" : "42ka1"
     }
 }

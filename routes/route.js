@@ -47,15 +47,15 @@ router.get("/statistic", userController.getStatisticsData);
 router.get("/leave-data/:id/:userType", userController.getLeaveDates);
 router.get("/leave-data-admin/:id", userController.getLeavesForAdminPanel);
 router.delete("/delete-event/:id", userController.deleteUserById);
-router.get("/testData/:id", timeTrackerController.getData);
+router.get("/getTimeTrackerData/:id", timeTrackerController.getTimeTrackerData);
 router.get("/getDataById/:id", timeTrackerController.getDataById);
-router.post("/sendData/:id", timeTrackerController.postData);
-router.delete("/delete-user/:id", timeTrackerController.deleteData);
+router.post("/setTimeTrackerData/:id", timeTrackerController.setTimeTrackerData);
+router.delete("/deleteTimeTrackerData/:id", timeTrackerController.deleteTimeTrackerData);
 router.patch("/update/:id", timeTrackerController.updateProjectData);
 router.patch("/updateCalendar", timeTrackerController.updateCalendarData);
 router.get(
   "/weekly-datas/:id/:weekFIrstDay/:weekLastDay",
-  timeTrackerController.getDataOfWeek
+  timeTrackerController.getDataByWeek
 );
 router.get("/getEmpList", userController.getEmployeesList);
 router.patch("/updateStatus/:id", userController.updateProjectStatus);
