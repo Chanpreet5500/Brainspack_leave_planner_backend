@@ -49,8 +49,14 @@ router.get("/leave-data-admin/:id", userController.getLeavesForAdminPanel);
 router.delete("/delete-event/:id", userController.deleteUserById);
 router.get("/getTimeTrackerData/:id", timeTrackerController.getTimeTrackerData);
 router.get("/getDataById/:id", timeTrackerController.getDataById);
-router.post("/setTimeTrackerData/:id", timeTrackerController.setTimeTrackerData);
-router.delete("/deleteTimeTrackerData/:id", timeTrackerController.deleteTimeTrackerData);
+router.post(
+  "/setTimeTrackerData/:id",
+  timeTrackerController.setTimeTrackerData
+);
+router.delete(
+  "/deleteTimeTrackerData/:id",
+  timeTrackerController.deleteTimeTrackerData
+);
 router.patch("/update/:id", timeTrackerController.updateProjectData);
 router.patch("/updateCalendar", timeTrackerController.updateCalendarData);
 router.get(
@@ -59,5 +65,7 @@ router.get(
 );
 router.get("/getEmpList", userController.getEmployeesList);
 router.patch("/updateStatus/:id", userController.updateProjectStatus);
+router.get("/login-profile/:id", userController.loginUserProfileDetails);
+router.patch("/update-profile/:id", userController.updateUserProfile);
 
 module.exports = router;
