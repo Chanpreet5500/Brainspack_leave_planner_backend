@@ -546,6 +546,7 @@ const loginUserProfileDetails = async (req, res) => {
     const userId = req.params.id;
     console.log(userId);
     const loggedInUser = await User.findOne({ _id: userId });
+    console.log(loggedInUser);
     const {
       firstName,
       lastName,
@@ -554,7 +555,8 @@ const loginUserProfileDetails = async (req, res) => {
       email,
       createdAt,
       birthDate,
-      _id
+      _id,
+      gender,
     } = loggedInUser;
     if (loggedInUser) {
       details = {
@@ -565,7 +567,8 @@ const loginUserProfileDetails = async (req, res) => {
         email,
         createdAt,
         birthDate,
-        _id
+        _id,
+        gender,
       };
       res.status(200).json({ message: "Login User Details", data: details });
     } else {
@@ -590,7 +593,7 @@ const updateUserProfile = async (req, res) => {
         lastName: lastName,
         designation: designation,
         designation: designation,
-        email: email
+        email: email,
       },
     }
   );
