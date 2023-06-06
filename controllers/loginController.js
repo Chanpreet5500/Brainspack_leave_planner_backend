@@ -541,32 +541,6 @@ const updateProjectStatus = async (req, res) => {
   }
 };
 
-const updateLeaveStatus = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { status } = req.body;
-    console.log(id, status,'data');
-    const updateLeaveInfo = await Leave.updateOne(
-      {
-        _id: id,
-      },
-      {
-        $set: {
-          status,
-        },
-      }
-    );
-    console.log(updateLeaveInfo, 'updateLeaveInfo')
-    if (updateLeaveInfo) {
-      res.status(200).json({ message: MESSAGE.SUCCESS.statusUpdated });
-    } else {
-      res.status(422).json({ message: MESSAGE.FAILURE.statusUpdateFailed });
-    }
-  } catch (error) {
-    return error;
-  }
-};
-
 const loginUserProfileDetails = async (req, res) => {
   try {
     const userId = req.params.id;
@@ -619,6 +593,7 @@ const updateUserProfile = async (req, res) => {
         phoneNumber: phoneNumber,
         email: email
       },
+      
     }
   );
   updateDetails
@@ -646,5 +621,4 @@ module.exports = {
   getLeavesForAdminPanel,
   loginUserProfileDetails,
   updateUserProfile,
-  updateLeaveStatus
 };
