@@ -581,8 +581,7 @@ const loginUserProfileDetails = async (req, res) => {
 
 const updateUserProfile = async (req, res) => {
   const { id } = req.params;
-  const { firstName, lastName, designation, phoneNumber, email } = req.body;
-  console.log(id, firstName, lastName, designation, phoneNumber, email);
+  const { firstName, lastName, phoneNumber, email } = req.body;
   const updateDetails = await User.updateOne(
     {
       _id: id,
@@ -591,17 +590,14 @@ const updateUserProfile = async (req, res) => {
       $set: {
         firstName: firstName,
         lastName: lastName,
-        designation: designation,
-        designation: designation,
-        email: email,
+        phoneNumber: phoneNumber,
+        email: email
       },
     }
   );
-  console.log(updateDetails);
   updateDetails
     ? res.status(200).json({
-        message: "User Details Updated Successfully",
-        data: updateDetails,
+        message: MESSAGE.SUCCESS.userDetailsUpdatedSuccessfully,
       })
     : res.status(400).json({ message: message.errorMessage });
 };

@@ -22,7 +22,8 @@ const schema = new mongoose.Schema({
     require: true,
   },
   status: {
-    type: Boolean,
+    type: Number,
+    default: 0,
     require: true,
   },
   date: {

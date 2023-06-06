@@ -11,7 +11,8 @@
         "deleteEvent" : "Holiday Deleted Successfully",
         "statusUpdated" : "Status Updated !", 
         "fetchedLeave" : "Leave fetched successfully",
-        "profileUpdated" : "Profile updated successfully"
+        "profileUpdated" : "Profile updated successfully",
+        "userDetailsUpdatedSuccessfully" : "User details updated successfully !"
     },
 
     "FAILURE" : {
