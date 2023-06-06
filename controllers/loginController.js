@@ -38,6 +38,7 @@ const registerUser = async (req, res) => {
     designation: req.body.designation,
     verificationToken: token,
     birthDate: req.body.birthdate,
+    gender: req.body.gender,
     roleId: role._id,
   });
 

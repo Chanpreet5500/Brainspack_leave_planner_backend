@@ -69,6 +69,9 @@ const schema = mongoose.Schema({
   birthDate : {
     type : String
   },
+  gender: {
+    type: String
+  },
   roleId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "UserRole",
