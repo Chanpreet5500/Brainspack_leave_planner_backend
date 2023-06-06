@@ -539,6 +539,29 @@ const updateProjectStatus = async (req, res) => {
   }
 };
 
+const updateProfileInfo = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const data = req.body;
+
+    const updateProfile = await User.updateOne(
+      { id: _id },
+      { $set: { name, email, password, designation } }
+    );
+    if (updateProfile) {
+      res.status(200).json({
+        message: MESSAGE.SUCCESS.profileUpdated,
+      });
+    } else {
+      res.status(402).json({
+        message: MESSAGE.FAILURE.profileError,
+      });
+    }
+  } catch (error) {
+    return error;
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -555,4 +578,5 @@ module.exports = {
   getEmployeesList,
   updateProjectStatus,
   getLeavesForAdminPanel,
+  updateProfileInfo,
 };
