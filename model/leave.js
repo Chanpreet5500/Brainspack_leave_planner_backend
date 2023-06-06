@@ -3,11 +3,11 @@ const mongoose = require("mongoose");
 const schema = mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref : 'User'
+    ref: "User",
   },
 
-  leaveDates : {
-    type: String
+  leaveDates: {
+    type: String,
   },
 
   leaveType: {
@@ -31,6 +31,11 @@ const schema = mongoose.Schema({
   updatedAt: {
     type: Date,
     default: Date.now,
+  },
+  status: {
+    type: Number,
+    default: 0,
+    required: true,
   },
 });
 
