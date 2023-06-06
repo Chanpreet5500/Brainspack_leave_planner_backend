@@ -65,6 +65,7 @@ router.get(
 );
 router.get("/getEmpList", userController.getEmployeesList);
 router.patch("/updateStatus/:id", userController.updateProjectStatus);
+router.patch("/update-leave-status/:id",userController.updateLeaveStatus);
 router.get("/login-profile/:id", userController.loginUserProfileDetails);
 router.patch("/update-profile/:id", userController.updateUserProfile);
 
