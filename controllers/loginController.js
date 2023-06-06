@@ -505,6 +505,7 @@ const getEmployeesList = async (req, res) => {
     const userList = await User.find({
       roleId: userAuth[0]._id,
     });
+
     if (userList) {
       res.status(200).json({ userList });
     } else {
@@ -539,27 +540,66 @@ const updateProjectStatus = async (req, res) => {
   }
 };
 
-const updateProfileInfo = async (req, res) => {
+const loginUserProfileDetails = async (req, res) => {
   try {
-    const { id } = req.params;
-    const data = req.body;
-
-    const updateProfile = await User.updateOne(
-      { id: _id },
-      { $set: { name, email, password, designation } }
-    );
-    if (updateProfile) {
-      res.status(200).json({
-        message: MESSAGE.SUCCESS.profileUpdated,
-      });
+    const userId = req.params.id;
+    console.log(userId);
+    const loggedInUser = await User.findOne({ _id: userId });
+    const {
+      firstName,
+      lastName,
+      phoneNumber,
+      designation,
+      email,
+      createdAt,
+      birthDate,
+      _id
+    } = loggedInUser;
+    if (loggedInUser) {
+      details = {
+        firstName,
+        lastName,
+        phoneNumber,
+        designation,
+        email,
+        createdAt,
+        birthDate,
+        _id
+      };
+      res.status(200).json({ message: "Login User Details", data: details });
     } else {
-      res.status(402).json({
-        message: MESSAGE.FAILURE.profileError,
-      });
+      res.status(404).json({ message: MESSAGE.FAILURE.userNotFound });
     }
-  } catch (error) {
-    return error;
+  } catch (err) {
+    return err;
   }
+};
+
+const updateUserProfile = async (req, res) => {
+  const { id } = req.params;
+  const { firstName, lastName, designation, phoneNumber, email } = req.body;
+  console.log(id, firstName, lastName, designation, phoneNumber, email);
+  const updateDetails = await User.updateOne(
+    {
+      _id: id,
+    },
+    {
+      $set: {
+        firstName: firstName,
+        lastName: lastName,
+        designation: designation,
+        designation: designation,
+        email: email
+      },
+    }
+  );
+  console.log(updateDetails);
+  updateDetails
+    ? res.status(200).json({
+        message: "User Details Updated Successfully",
+        data: updateDetails,
+      })
+    : res.status(400).json({ message: message.errorMessage });
 };
 
 module.exports = {
@@ -578,5 +618,6 @@ module.exports = {
   getEmployeesList,
   updateProjectStatus,
   getLeavesForAdminPanel,
-  updateProfileInfo,
+  loginUserProfileDetails,
+  updateUserProfile,
 };

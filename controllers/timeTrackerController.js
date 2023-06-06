@@ -18,6 +18,7 @@ const getTimeTrackerData = async (req, res) => {
 const setTimeTrackerData = async (req, res) => {
   try {
     const data = req.body;
+
     try {
       const userData = await TimeTracker.insertMany(data);
       if (userData) {
@@ -76,7 +77,8 @@ const updateProjectData = async (req, res) => {
 const getDataByWeek = async (req, res) => {
   try {
     const { id, weekFIrstDay, weekLastDay } = req.params;
-
+    
+   
     const filterdUsers = await TimeTracker.find({
       userId: id,
       date: {
