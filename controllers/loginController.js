@@ -544,11 +544,9 @@ const updateProjectStatus = async (req, res) => {
 const loginUserProfileDetails = async (req, res) => {
   try {
     const userId = req.params.id;
-    console.log(userId);
     const loggedInUser = await User.findOne({ _id: userId });
     const roleType = await userRole.find({_id:loggedInUser.roleId})
    const {role} = roleType[0]
-   console.log(role)
     const {
       firstName,
       lastName,
@@ -611,7 +609,6 @@ const updateLeaveStatus = async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
-    console.log(id, status,'data');
     const updateLeaveInfo = await Leave.updateOne(
       {
         _id: id,
@@ -622,7 +619,6 @@ const updateLeaveStatus = async (req, res) => {
         },
       }
     );
-    console.log(updateLeaveInfo, 'updateLeaveInfo')
     if (updateLeaveInfo) {
       res.status(200).json({ message: MESSAGE.SUCCESS.statusUpdated });
     } else {

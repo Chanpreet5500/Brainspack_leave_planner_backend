@@ -16,22 +16,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 
-// const connectionForAgenda = 'mongodb://localhost:27017/test'
-
-// const agenda = new Agenda({db : {address : connectionForAgenda}})
-
-// agenda.define('creating values', async (job) => {
-//   console.log(job, "BALUES")
-//   console.log('after job was created24')
-//   await AgendaSchema.create(job.attrs.data)
-// });
-
-// (async function(){
-//   await agenda.start() ;
-
-// 	//await agenda.schedule('12:28pm', 'creating values', { name : 'two' });
-// })();
-
 const controller = require("./controllers/loginController");
 const registerationViaEmail = controller.registerViaGoogle;
 
@@ -47,9 +31,6 @@ app.use(passport.session());
 app.use(passport.initialize());
 
 const authUser = (request, accessToken, refreshToken, profile, done) => {
-  console.log(request);
-  console.log(profile);
-
   return done(null, profile);
 };
 
@@ -66,9 +47,6 @@ passport.use(
 );
 
 passport.serializeUser((user, done) => {
-  console.log(`\n--------> Serialize User:`);
-  console.log(user, "USERRRRRRRRRRRRRRR");
-  console.log(user._json, "JASSONNNN");
   const userDetails = user._json;
 
   registerationViaEmail(userDetails);
@@ -80,8 +58,6 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((user, done) => {
-  console.log("\n--------- Deserialized User:");
-  console.log(user);
   // This is the {user} that was saved in req.session.passport.user.{user} in the serializationUser()
   // deserializeUser will attach this {user} to the "req.user.{user}", so that it can be used anywhere in the App.
 

@@ -39,7 +39,7 @@ const loginValidation = (req, res, next) => {
     next();
 
   } catch (err) {
-    console.log(err, "EMAIL VALIDATION ERRROR");
+    return error;
   }
 
 };
