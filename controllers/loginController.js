@@ -546,7 +546,9 @@ const loginUserProfileDetails = async (req, res) => {
     const userId = req.params.id;
     console.log(userId);
     const loggedInUser = await User.findOne({ _id: userId });
-    console.log(loggedInUser);
+    const roleType = await userRole.find({_id:loggedInUser.roleId})
+   const {role} = roleType[0]
+   console.log(role)
     const {
       firstName,
       lastName,
@@ -557,9 +559,10 @@ const loginUserProfileDetails = async (req, res) => {
       birthDate,
       _id,
       gender,
+      
     } = loggedInUser;
-    if (loggedInUser) {
-      details = {
+    if (loggedInUser &&roleType) {
+     const details = {
         firstName,
         lastName,
         phoneNumber,
@@ -569,6 +572,7 @@ const loginUserProfileDetails = async (req, res) => {
         birthDate,
         _id,
         gender,
+       role
       };
       res.status(200).json({ message: "Login User Details", data: details });
     } else {
